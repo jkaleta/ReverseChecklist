@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/menu_add_activity" android:title="@string/add_activity"
+		android:icon="@android:drawable/ic_menu_add"></item>
+	<item android:id="@+id/menu_activity_list_quick_report"
+		android:icon="@android:drawable/ic_menu_report_image" android:title="@string/quick_report_menu_item">
+	</item>
+	<item android:title="@string/settings" android:id="@+id/menu_activity_list_settings"
+		android:icon="@android:drawable/ic_menu_preferences"></item>
+	<item android:title="@string/help" android:id="@+id/menu_activity_list_help"
+		android:icon="@android:drawable/ic_menu_help"></item>
+	
+	
+	<item android:icon="@android:drawable/ic_menu_info_details"
+		android:title="@string/app_about" android:id="@+id/menu_activity_list_about"></item>
+	<item android:id="@+id/menu_activity_list_more" android:title="@string/app_menu_more" android:icon="@android:drawable/ic_menu_more">
+		<menu>
+			<item android:id="@+id/menu_activity_list_exchange"
+				android:title="@string/database_exchange" android:icon="@android:drawable/ic_menu_upload"></item>
+		</menu>
+	</item>
+
+
+
+</menu>

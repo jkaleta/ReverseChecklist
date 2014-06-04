@@ -1,0 +1,6 @@
+com.commonsware.cwac.tlv
+com.jakubkaleta.checklist
+com.jakubkaleta.checklist.DataAccess
+com.jakubkaleta.checklist.DataAccess.beans
+com.jakubkaleta.checklist.DataAccess.services
+com.jakubkaleta.checklist.DataAccess.tables

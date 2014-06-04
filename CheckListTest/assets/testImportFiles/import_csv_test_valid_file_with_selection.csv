@@ -1,0 +1,5 @@
+test list,test category,test item's name,true
+test list,test category2,test item's name2,0
+other list,cat1,item1,true
+other list,cat1,item1,false
+other list,cat1,item2,true

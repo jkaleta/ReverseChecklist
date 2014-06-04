@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<TextView android:text="@string/category_name" android:id="@+id/txt_category_name"
+		android:layout_width="fill_parent" android:layout_height="40sp"
+		android:textSize="16sp" android:textStyle="bold" android:gravity="center">
+	</TextView>
+
+	<Spinner android:layout_width="fill_parent"
+		android:layout_below="@+id/txt_category_name" android:layout_height="40sp"
+		android:id="@+id/spinner_category" />
+
+	<TextView android:text="@string/entry_name" android:id="@+id/txt_entry_name"
+		android:layout_below="@+id/spinner_category" android:layout_width="fill_parent"
+		android:layout_height="40sp" android:textSize="16sp"
+		android:textStyle="bold" android:gravity="center">
+	</TextView>
+
+	<RelativeLayout android:id="@+id/add_entry_group_layout"
+		android:layout_width="fill_parent" android:layout_below="@+id/txt_entry_name"
+		android:layout_height="wrap_content">
+
+		<ImageButton android:id="@+id/btn_speak_now"
+			android:layout_centerVertical="true" android:layout_height="wrap_content"
+			android:src="@android:drawable/ic_btn_speak_now"
+			android:contentDescription="@string/android_voice_recognition"
+			android:layout_width="wrap_content" android:layout_alignParentLeft="true" />
+
+		<EditText android:id="@+id/etxt_entry_name"
+			android:layout_centerVertical="true" android:layout_width="fill_parent"
+			android:layout_alignBaseline="@+id/btn_speak_now"
+			android:layout_height="wrap_content" android:maxLines="3"
+			android:lines="2" android:layout_marginRight="80dp"
+			android:inputType="text"
+			android:layout_marginLeft="50dp" android:singleLine="false">
+		</EditText>
+
+		<Button android:id="@+id/btn_add_edit_entry"
+			android:layout_centerVertical="true" android:layout_below="@+id/txt_entry_name"
+			android:layout_alignParentRight="true" android:text="@string/add_entry"
+			android:layout_width="80dp" android:layout_height="wrap_content"
+			android:textSize="14sp" android:textStyle="bold" android:gravity="center"
+			android:state_enabled="false">
+		</Button>
+	</RelativeLayout>
+
+	<TextView android:text="@string/multiple_entries_hint"
+		android:id="@+id/txt_multiple_entries_hint" android:layout_below="@+id/add_entry_group_layout"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:textSize="12sp" android:textStyle="bold" android:gravity="center"
+		android:layout_marginTop="40dp">
+	</TextView>
+</RelativeLayout>

@@ -1,0 +1,134 @@
+android.annotation.SuppressLint
+android.annotation.TargetApi
+com.commonsware.cwac.tlv.R:
+    10:10:public R()
+com.commonsware.cwac.tlv.R$array
+com.commonsware.cwac.tlv.R$attr
+com.commonsware.cwac.tlv.R$color
+com.commonsware.cwac.tlv.R$drawable
+com.commonsware.cwac.tlv.R$id
+com.commonsware.cwac.tlv.R$layout
+com.commonsware.cwac.tlv.R$menu
+com.commonsware.cwac.tlv.R$string
+com.commonsware.cwac.tlv.R$styleable:
+    public static final int TouchListView_dragndrop_background
+    public static final int TouchListView_expanded_height
+    public static final int TouchListView_grabber
+    public static final int TouchListView_normal_height
+    public static final int TouchListView_remove_mode
+    268:268:public R$styleable()
+com.commonsware.cwac.tlv.TouchListView:
+    public static final int FLING
+    public static final int SLIDE_RIGHT
+    public static final int SLIDE_LEFT
+    448:449:public void setDragListener(com.commonsware.cwac.tlv.TouchListView$DragListener)
+    456:457:public void setRemoveListener(com.commonsware.cwac.tlv.TouchListView$RemoveListener)
+com.jakubkaleta.checklist.AddEditActivity:
+    private static final int VOICE_RECOGNITION_REQUEST_CODE
+com.jakubkaleta.checklist.AddEditCategory:
+    private static final int VOICE_RECOGNITION_REQUEST_CODE
+com.jakubkaleta.checklist.AddEditEntry:
+    private static final int VOICE_RECOGNITION_REQUEST_CODE
+com.jakubkaleta.checklist.AddEditEntry$myOnItemSelectedListener:
+    android.widget.SimpleCursorAdapter mLocalAdapter
+    android.app.Activity mLocalContext
+com.jakubkaleta.checklist.BuildConfig
+com.jakubkaleta.checklist.DataAccess.ChecklistDataProvider:
+    private static final int ACTIVITIES
+    private static final int ACTIVITY_ID
+    private static final int APP_STATE
+    private static final int CATEGORIES
+    private static final int CATEGORY_ID
+    private static final int ENTRIES
+    private static final int ENTRY_ID
+    private static final int CONFIGURATION
+com.jakubkaleta.checklist.DataAccess.DatabaseOpenHelper:
+    private static final java.lang.String DATABASE_NAME
+    private static final int DATABASE_VERSION
+    private static final java.lang.String ACTIVITIES_TABLE_CREATE
+    private static final java.lang.String CATEGORIES_TABLE_CREATE
+    private static final java.lang.String ENTRIES_TABLE_CREATE
+    private static final java.lang.String STATE_TABLE_CREATE
+    private static final java.lang.String CONFIGURATION_PARAMETERS_TABLE_CREATE
+    private static final java.lang.String addTriggerAutoDeleteCategoriesWhenActivityDeleted
+    private static final java.lang.String addTriggerAutoDeleteEntriesWhenCategoryDeleted
+com.jakubkaleta.checklist.DataAccess.beans.ActivitiesDataSource:
+    126:136:public void updateSelectionOfAllItems(boolean)
+com.jakubkaleta.checklist.DataAccess.beans.CategoryBean:
+    148:161:public com.jakubkaleta.checklist.DataAccess.beans.EntryBean getEntry(java.lang.String)
+com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns:
+    public static final java.lang.String AUTHORITY
+    public static final java.lang.String TABLE_NAME
+    public static final java.lang.String CONTENT_TYPE
+    public static final java.lang.String CONTENT_ITEM_TYPE
+    public static final java.lang.String ACTIVITY_NAME
+    public static final java.lang.String DATE_CREATED
+    public static final java.lang.String SELECTED_ITEM_COUNT
+    public static final java.lang.String ITEM_COUNT
+    public static final java.lang.String DEFAULT_SORT_ORDER
+    21:23:private ActivityColumns()
+com.jakubkaleta.checklist.DataAccess.tables.AppStateColumns:
+    public static final java.lang.String AUTHORITY
+    public static final java.lang.String CONTENT_TYPE
+    public static final java.lang.String CONTENT_ITEM_TYPE
+    public static final java.lang.String ACTIVITY_ID
+    public static final java.lang.String CATEGORY_ID
+    public static final java.lang.String MODE
+    public static final java.lang.String ACTIVITY_LIST_SORT_ORDER
+    public static final java.lang.String TABLE_NAME
+    20:21:private AppStateColumns()
+com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns:
+    public static final java.lang.String AUTHORITY
+    public static final java.lang.String TABLE_NAME
+    public static final java.lang.String CONTENT_TYPE
+    public static final java.lang.String CONTENT_ITEM_TYPE
+    public static final java.lang.String CATEGORY_NAME
+    public static final java.lang.String DATE_CREATED
+    public static final java.lang.String SELECTED_ITEM_COUNT
+    public static final java.lang.String ITEM_COUNT
+    public static final java.lang.String CATEGORY_SORT_ORDER
+    public static final java.lang.String DEFAULT_SORT_ORDER
+    public static final java.lang.String ACTIVITY_ID
+    public static final java.lang.String SORT_POSITION
+    20:21:private CategoryColumns()
+com.jakubkaleta.checklist.DataAccess.tables.ConfigurationParametersColumns:
+    public static final java.lang.String AUTHORITY
+    public static final java.lang.String CONTENT_TYPE
+    public static final java.lang.String CONTENT_ITEM_TYPE
+    public static final java.lang.String PROMPT_IN_TODO_MODE
+    public static final java.lang.String TABLE_NAME
+    20:21:private ConfigurationParametersColumns()
+com.jakubkaleta.checklist.DataAccess.tables.EntryColumns:
+    public static final java.lang.String AUTHORITY
+    public static final java.lang.String CONTENT_TYPE
+    public static final java.lang.String CONTENT_ITEM_TYPE
+    public static final java.lang.String CATEGORY_ID
+    public static final java.lang.String ENTRY_NAME
+    public static final java.lang.String DATE_CREATED
+    public static final java.lang.String IS_SELECTED
+    public static final java.lang.String SORT_POSITION
+    public static final java.lang.String DATE_LAST_PERFORMED
+    public static final java.lang.String DEFAULT_SORT_ORDER
+    public static final java.lang.String TABLE_NAME
+    20:22:private EntryColumns()
+com.jakubkaleta.checklist.EntriesFlipper:
+    private static final int ADDED_NEW_ENTRY
+    private static final int EDITED_ENTRY
+    private static final int ACTIVITY_ID_NULL_VALUE
+    private static final int CATEGORY_ID_NULL_VALUE
+    private static final java.lang.String MODE_NULL_VALUE
+com.jakubkaleta.checklist.R
+com.jakubkaleta.checklist.R$array
+com.jakubkaleta.checklist.R$attr
+com.jakubkaleta.checklist.R$color
+com.jakubkaleta.checklist.R$drawable
+com.jakubkaleta.checklist.R$id
+com.jakubkaleta.checklist.R$layout
+com.jakubkaleta.checklist.R$menu
+com.jakubkaleta.checklist.R$string
+com.jakubkaleta.checklist.R$styleable
+com.jakubkaleta.checklist.SafeViewFlipper:
+    24:25:public SafeViewFlipper(android.content.Context)
+com.jakubkaleta.checklist.Utilities:
+    11:11:public Utilities()
+    53:54:public static java.util.Date toDate(java.sql.Timestamp)

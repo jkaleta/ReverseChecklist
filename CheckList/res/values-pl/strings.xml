@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+<string name="app_name">Lista do góry nogami :)</string>
+<string name="manage_categories">Kategorie</string>
+<string name="continue_prompt">Kontynuować?</string>
+<string name="settings">Ustawienia</string>
+<string name="toggle_mode">Przelącz tryb edycji</string>
+<string name="disable_prompt_in_todo_mode">Wyłącz potwierdzenia w trybie TODO</string>
+<string name="yes_string">Tak!</string>
+<string name="no_string">Nie!</string>
+<string name="add_entry">Dodaj</string>
+<string name="entry_name">Nazwa</string>
+<string name="category_name">Kategoria</string><string name="empty_category_list_default_value">You currently have no categories defined. Select &quot;Add&quot; from the menu to create one.</string>
+<string name="add_category">Dodaj kategorię</string>
+<string name="remove_category">Usuń kategorię</string>
+<string name="empty_list_default_value">Nie ma jeszcze nic na tej liście. Wybierz &quot;Dodaj&quot; z menu żeby dodać nowe elementy. </string>
+<string name="remove_item">Usuń</string>
+<string name="of">z</string>
+<string name="items">rzeczy</string>
+<string name="selected">zaznaczonych</string>
+<string name="edit_category">Edytuj Kategorię</string>
+<string name="save_changes">Zapisz</string>
+<string name="clear_list_in_todo_mode">Zaznacz wszystkie jako zrobione</string>
+<string name="edit_item">Edutuj</string>
+<string name="confirm_permanent_deletion_of_item">Wpis zostanie usunięty. Kontunuować?</string>
+<string name="confirm_permanent_deletion_of_category">Kategoria zostanie usunięta wraz z wszystkimi wpisami. Kontunuować?</string>
+<string name="edit_activity">Edytuj</string>
+<string name="app_about">Info</string>
+<string name="help">Pomoc</string>
+<string name="questions_suggestions">Wszelkie pytania, sugestie, pochwały i nagany proszę kierować na adres: checklist@jakubkaleta.com</string>
+<string name="item_counts">%1$d / %2$d</string>
+<string name="empty_list">Pusta</string>
+<string name="ok_string">OK</string>
+<string name="mark_item_done">Zaznacz jako wykonane</string>
+<string name="confirm_permanent_deletion_of_list">Lista zostanie usunięta. Kontynuować?</string>
+<string-array name="sort_options_for_activity_list">
+    <item>Od najkrótszej do najdluższej listy</item>
+    <item>Od najdluższej do najkrótszej listy</item>
+    <item>Od najwięcej do zrobienia do najmniej</item>
+    <item>Od najwięcej do zrobienia do najmniej</item>
+    <item>Alfabetycznie, A-Z</item>
+    <item>Alfabetycznie, Z-A</item>
+    <item>Od najstarszej do najnowszej</item>
+    <item>Od najnowszej do najstarszej</item>
+</string-array>
+<string-array name="sort_options_for_category_list">
+	<item>Zdefiniowany przez użytkownika</item>
+    <item>Od najkrótszej do najdluższej listy</item>
+    <item>Od najdluższej do najkrótszej listy</item>
+    <item>Alfabetycznie, A-Z</item>
+    <item>Alfabetycznie, Z-A</item>
+    <item>Od najstarszej do najnowszej</item>
+    <item>Od najnowszej do najstarszej</item>
+</string-array>
+<string-array name="sort_options_for_item_list">
+    <item>Alfabetycznie, A-Z</item>
+    <item>Alfabetycznie, Z-A</item>
+    <item>Własny</item>
+</string-array>
+<string name="clear_list_in_edit_mode">Wyczyść zaznaczone</string>
+<string name="multiple_entries_hint">Żeby szybko dodać kilka rzeczy do listy wpisz je wszystkie naraz, oddzielone średnikami. Na przykład: &quot;Rzecz 1; Rzecz 2&quot;</string>
+<string name="app_menu_more">Więcej</string>
+<string name="add_item_no_categories_defined">Musisz dodać kategorię przed dodaniem nowego wpisu. Wybierz \&quot;Dodaj kategorię\&quot; z menu.</string>
+
+</resources>

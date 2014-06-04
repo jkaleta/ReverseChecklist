@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:minHeight="45dp" android:gravity="center">
+	<ImageView android:id="@+id/icon"
+	    android:contentDescription="@string/dragger_description"
+		android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+		android:layout_alignParentBottom="true" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:src="@drawable/grabber" />
+	<TextView android:id="@+id/label" android:textSize="16sp"
+		android:textStyle="bold" android:gravity="center"
+		android:layout_width="fill_parent" android:paddingLeft="9dip"
+		android:layout_height="wrap_content"
+		android:layout_alignWithParentIfMissing="true"
+		android:layout_toRightOf="@id/icon" android:layout_centerVertical="true"
+		android:ellipsize="marquee"
+		android:singleLine="true" />
+</RelativeLayout>

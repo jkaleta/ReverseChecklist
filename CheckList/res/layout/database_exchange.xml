@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<ImageButton android:src="@android:drawable/ic_menu_help"
+		android:id="@+id/btn_export_all_data_help" android:layout_height="45dp"
+		android:layout_width="45dp" android:layout_alignParentTop="true"
+		android:contentDescription="@string/help_icon_description"
+		android:layout_marginTop="45dp"></ImageButton>
+
+	<Button android:id="@+id/btn_export_all_data"
+		android:layout_centerVertical="true" android:layout_toRightOf="@+id/btn_export_all_data_help"
+		android:layout_alignTop="@+id/btn_export_all_data_help" android:text="@string/export_data"
+		android:paddingTop="10sp" android:layout_width="fill_parent"
+		android:layout_height="45dp" android:textSize="14sp"
+		android:textStyle="bold" android:gravity="center" android:state_enabled="true">
+	</Button>
+
+	<ImageButton android:src="@android:drawable/ic_menu_help"
+		android:id="@+id/btn_import_data_help" android:layout_height="45dp"
+		android:layout_below="@+id/btn_export_all_data_help"
+		android:contentDescription="@string/help_icon_description"		
+		android:layout_width="45dp" android:layout_marginTop="25dp"></ImageButton>
+
+	<Button android:id="@+id/btn_import_data"
+		android:layout_centerVertical="true" android:layout_toRightOf="@+id/btn_import_data_help"
+		android:layout_alignTop="@+id/btn_import_data_help" android:text="@string/import_data"
+		android:paddingTop="10sp" android:layout_width="fill_parent"
+		android:layout_height="45dp" android:textSize="14sp"
+		android:textStyle="bold" android:gravity="center" android:state_enabled="true">
+
+	</Button>
+
+	<ImageButton android:src="@android:drawable/ic_menu_help"
+		android:id="@+id/rbg_import_mode_selection_help"
+		android:layout_height="45dp" android:layout_below="@+id/btn_import_data_help"
+		android:contentDescription="@string/help_icon_description"
+		android:layout_width="45dp" android:layout_marginTop="25dp"></ImageButton>
+	<RadioGroup android:id="@+id/rbg_import_mode_selection"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_alignTop="@+id/rbg_import_mode_selection_help"
+		android:layout_alignParentRight="true" android:layout_alignLeft="@+id/btn_import_data">
+		<RadioButton android:checked="true"
+			android:text="@string/import_data_mode_merge_lists" android:id="@+id/radio_merge_lists"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></RadioButton>
+		<RadioButton android:text="@string/import_data_mode_rename_lists"
+			android:id="@+id/radio_rename_duplicates" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></RadioButton>
+	</RadioGroup>
+
+
+</RelativeLayout>
+
+

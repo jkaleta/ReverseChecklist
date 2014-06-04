@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <string name="export_data_description">Wciśnij \"Eksportuj Bazę Danych\" żeby
+		zapisa wszystkie dane do pliku .csv. \n Plik ten znajdziesz na karcie
+		SD w katalogu quot;\ReverseChecklist\DatabaseExport\"</string>
+    <string name="export_data">Eksportuj Dane</string>
+    <string name="database_exchange">Eksportuj / Importuj dane</string>
+    <string name="exporting_data_to_csv">Trwa eksport danych do pliku csv\…</string>
+    <string name="exporting_data_to_csv_success">Eksport zakończony pomyślnie!</string>
+    <string name="exporting_data_to_csv_fail">Eksport zakończony niepowodzeniem :(</string>
+    <string name="import_data">Importuj dane</string>
+    <string name="import_data_description">Wciśnij \"Importuj Dane\" żeby wybra plik
+		z danymi do zaimportowania. Informacje o prawidłowym formacie pliku
+		znajdziesz w pomocy.\nImport wymaga zainstalowanego menedżera plików,
+		jak na przykład Astro Folders.</string>
+    <string name="import_select_file">Wybierz plik do zaimportowania</string>
+    <string name="importing_data_from_csv">Trwa importowanie danych\…</string>
+    <string name="importing_data_success">Import danych zakończony pomyślnie!</string>
+    <string name="import_data_mode_merge_lists">Połącz listy</string>
+    <string name="import_data_mode_rename_lists">Zmień nazwę listy</string>
+    <string name="import_data_mode">Tryb importu:</string>
+    <string name="importing_data_fail_invalid_file_name">Import zakończony niepowodzeniem. Wybrany plik nie istnieje.</string>
+    <string name="importing_data_fail_invalid_structure">Import zakończony niepowodzeniem. Format danych jest nieprawidłowy. Więcej info znajdziesz w Pomocy.</string>
+    <string name="importing_data_fail_file_empty">Import zakończony niepowodzeniem. Wybrany plik jest pusty.</string>
+    <string name="importing_data_fail_other_error">Import zakończony niepowodzeniem. Please try a different file. Więcej info znajdziesz w Pomocy.</string>
+    <string name="import_data_mode_explanation">Tryb importu określa co zrobic jeżeli już istnieje lista o tej samej nazwie jak importowana lista. Wybierz \'Połącz listy\' żeby połączyc istniejącą i nową listę i pominąc zduplikowane wpisy, albo \'Zmień nazwę\', aby zmienic nazwę importowanej listy.</string>
+
+</resources>

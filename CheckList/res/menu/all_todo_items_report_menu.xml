@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	
+<item android:title="@string/email_to_me" android:icon="@android:drawable/ic_menu_send" android:id="@+id/menu_all_todo_report_email_me_this_report"></item><item android:icon="@android:drawable/ic_menu_close_clear_cancel" android:title="@string/clear_list_in_edit_mode" android:id="@+id/menu_all_todo_report_clear_list"></item><item android:title="@string/my_activities" android:icon="@android:drawable/ic_menu_revert" android:id="@+id/menu_all_todo_report_home"></item>
+
+
+</menu>

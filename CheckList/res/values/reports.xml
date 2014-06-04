@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><string name="email_to_me">E-mail this list</string><string name="send_email_text">Send email\&#8230;</string><string name="quick_report_menu_item">ToDo Report</string><string name="all_to_do_items_email_subject">Reverse CheckList: All ToDo items </string>
+<color name="quick_report_activity_name_color">#3399cc</color>
+<color name="quick_report_category_name_color">#3399cc</color>
+</resources>

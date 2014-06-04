@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+<string name="export_data_description">Press \&quot;Export Database\&quot; to save all data from your database into an external .csv file. \n The file will be saved to your SD Card under \&quot;\\ReverseChecklist\\DatabaseExport\\\&quot;</string>
+<string name="export_data">Export Database</string>
+<string name="database_exchange">Export / Import Database</string>
+<string name="exporting_data_to_csv">Exporting data to csv\&#8230;</string>
+<string name="exporting_data_to_csv_success">Exporting data to csv completed successfully!</string>
+<string name="exporting_data_to_csv_fail">Exporting data to csv failed :( Please try again\&#8230;</string>
+<string name="import_data">Import Database</string>
+<string name="import_data_description">Press \&quot;Import Database\&quot; to pick a .csv file with ReverseChecklist data. See Help for more info about expected file format. \nThis feature requires a file manager (like Astro Folders) to be installed.</string>
+<string name="import_select_file">Select File to import</string>
+<string name="importing_data_from_csv">Importing data\&#8230;</string>
+<string name="importing_data_success">Importing data finished successfully!</string>
+<string name="importing_data_fail_invalid_file_name">Import Failed! The selected file was invalid.</string>
+<string name="importing_data_fail_invalid_structure">Import Failed! The selected file did not contain data in expected format. See help for more info.</string>
+<string name="importing_data_fail_file_empty">Import Failed! The selected file was empty.</string>
+<string name="importing_data_fail_other_error">Import Failed! Please try a different file. See help for more info about importing files.</string>
+<string name="import_data_mode_merge_lists">Merge Lists</string>
+<string name="import_data_mode_rename_lists">Rename List</string>
+<string name="import_data_mode">Import Mode:</string>
+<string name="import_data_mode_explanation">The import mode determines how to handle duplicate lists. If there already exist a list with the same name as the imported list, \'Rename List\' will cause the imported list to be renamed, while \'Merge Lists\' will merge the existing and imported list, skipping duplicate entries.</string>
+</resources>

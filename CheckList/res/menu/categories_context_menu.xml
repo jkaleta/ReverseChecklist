@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:title="@string/edit_category" android:id="@+id/categories_context_menu_edit_item"></item><item android:icon="@android:drawable/ic_menu_delete" android:title="@string/remove_category" android:id="@+id/categories_context_menu_remove_item"></item>
+	
+</menu>

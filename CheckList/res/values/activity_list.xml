@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="my_activities">All lists</string>
+	<string name="add_activity">Add list</string>
+	<string name="activity_name">List name: </string>
+	<string name="remove_activity">Remove list</string>
+	<string name="activity_details">List details</string>
+	<string name="empty_activity_list_default_value">You currently have no lists defined. Select &quot;Add&quot; from the menu to create one.</string>
+	<string name="copy_list">Copy list</string>
+	<string name="copying_list">Copying list</string>
+	<string name="copying_list_success">List was copied successfully!</string>
+	<string name="copying_list_failure">Copying list failed!</string>
+	<string name="duplicate_name">Duplicate name!</string>
+	<string name="duplicate_name_exists_message">A list with the name \&quot;%1$s\&quot; already exists. Please choose a different name.</string><string name="mark_all_undone">Mark All Undone (Selected)</string><string name="mark_all_done">Mark All Done (Unselected)</string>
+</resources>

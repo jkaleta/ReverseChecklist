@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="android_voice_recognition">Użyj rozpoznawania głosu Android</string>
+    <string name="unselect_all_button_text">Odznacz wszystkie</string>
+    <string name="select_all_button_text">Zaznacz wszystkie</string>
+    <string name="help_icon_description">Więcej na ten temat</string>
+    <string name="dragger_description">Przeciągnij mnie</string>
+</resources>

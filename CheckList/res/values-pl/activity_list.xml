@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="my_activities">Moje Listy</string>
+	<string name="add_activity">Dodaj nową listę</string>
+	<string name="activity_name">Nazwa listy: </string>
+	<string name="activity_details">Szczegóły listy</string>
+	<string name="remove_activity">Usuń listę</string>
+	<string name="empty_activity_list_default_value">Nie masz jeszcze żadnych list. Wybierz
+		&quot;Dodaj&quot; z menu żeby stworzyć nową listę.</string>
+	<string name="copy_list">Kopiuj listę</string>
+	<string name="copying_list">Trwa kopiowanie listy</string>
+	<string name="copying_list_success">Lista skopiowana pomyślnie!</string>
+	<string name="copying_list_failure">Kopiowanie zakonczone niepowodzeniem!</string>
+		<string name="duplicate_name">Nazwa już istnieje!</string>
+	<string name="duplicate_name_exists_message">Lista o podanej nazwie \&quot;%1$s\&quot; już istnieje. Podaj inną nazwę.</string>
+	<string name="mark_all_undone">Zaznacz wszystkie do zrobienia</string><string name="mark_all_done">Odznacz wszystkie jako zrobione</string>
+</resources>

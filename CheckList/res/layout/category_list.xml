@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<com.commonsware.cwac.tlv.TouchListView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tlv="http://schemas.android.com/apk/res/com.jakubkaleta.checklist"
+		android:divider="#aaaaaaaa" android:dividerHeight="1dip" android:id="@android:id/list"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:drawSelectorOnTop="true" tlv:normal_height="50dip"
+		tlv:dragndrop_background="#aaaaaaaa" tlv:grabber="@+id/icon" />
+
+	<!-- Here is the view to show if the list is empty -->
+	<TextView android:text="@string/empty_category_list_default_value"
+		android:id="@+id/txt_empty_list" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:textSize="16sp"
+		android:textStyle="bold" android:gravity="center">
+	</TextView>
+</FrameLayout>
+

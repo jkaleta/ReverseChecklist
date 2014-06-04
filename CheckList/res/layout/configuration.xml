@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:stretchColumns="0">
+	<TableRow>
+		<TextView android:text="@string/disable_prompt_in_todo_mode"
+			android:id="@+id/txt_config_disable_prompt_in_todo_mode"
+			android:layout_width="fill_parent" android:layout_height="40sp"
+			android:textSize="16sp" android:textStyle="bold" android:gravity="center"
+			android:layout_span="2">
+		</TextView>
+		<CheckBox android:id="@+id/check_disable_prompt_in_todo_mode"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
+
+	</TableRow>
+</TableLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="android_voice_recognition">Use Android Voice Recognition</string>
+    <string name="unselect_all_button_text">Unselect All</string>
+    <string name="select_all_button_text">Select All</string>
+    <string name="help_icon_description">Get help about this item</string>
+    <string name="dragger_description">Drag me</string>
+</resources>

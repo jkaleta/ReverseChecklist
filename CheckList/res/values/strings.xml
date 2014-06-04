@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">Reverse CheckList</string>
+<string name="toggle_mode">Toggle mode</string>
+<string name="continue_prompt">Continue?</string>
+<string name="yes_string">Yes!</string>
+<string name="no_string">No!</string>
+<string name="add_entry">Add entry</string>
+<string name="entry_name">Entry</string>
+<string name="category_name">Category</string>
+<string name="add_category">Add category</string><string name="empty_category_list_default_value">You currently have no categories defined. Select &quot;Add&quot; from the menu to create one.</string>
+<string name="remove_category">Remove category</string>
+<string name="empty_list_default_value">This list is empty. Select &quot;Add&quot; from the menu to add entries.</string>
+<string name="remove_item">Remove entry</string>
+<string name="of">of</string>
+<string name="items">entries</string>
+<string name="selected">selected</string>
+<string name="edit_category">Edit category</string>
+<string name="save_changes">Save</string>
+<string name="clear_list_in_todo_mode">Mark all done</string>
+<string name="edit_item">Edit entry</string>
+<string name="confirm_permanent_deletion_of_item">This entry will be removed permanently. Continue?</string>
+<string name="confirm_permanent_deletion_of_category">This category will be removed permanently. All items that are associated with this category will also be deleted. Continue?</string>
+<string name="edit_activity">Edit list</string>
+<string name="app_about">About</string>
+<string name="help">Help</string>
+<string name="questions_suggestions">If you have any questions, suggestions or complaints, please email them to checklist@jakubkaleta.com</string>
+<string name="item_counts">%1$d / %2$d</string>
+<string name="empty_list">Empty</string>
+<string name="ok_string">OK</string>
+<string name="mark_item_done">Mark done</string>
+<string name="confirm_permanent_deletion_of_list">This list will be removed permanently. Continue?</string>
+<string name="disable_prompt_in_todo_mode">Disable prompts in TODO mode</string>
+<string name="settings">Settings</string>
+<string-array name="sort_options_for_activity_list">
+    <item>Shortest list first</item>
+    <item>Longest list first</item>
+    <item>Least To-Do items first</item>
+    <item>Most To-Do items first</item>
+    <item>Alphabetically, A-Z</item>
+    <item>Alphabetically, Z-A</item>
+    <item>Oldest to newest</item>
+    <item>Newest to oldest</item>
+</string-array>
+<string-array name="sort_options_for_category_list">
+	<item>User defined</item>
+    <item>Shortest list first</item>
+    <item>Longest list first</item>    
+    <item>Alphabetically, A-Z</item>
+    <item>Alphabetically, Z-A</item>
+    <item>Oldest to newest</item>
+    <item>Newest to oldest</item>
+</string-array>
+<string-array name="sort_options_for_item_list">
+    <item>Alphabetically, A-Z</item>
+    <item>Alphabetically, Z-A</item>
+    <item>Custom</item>
+</string-array>
+<string name="clear_list_in_edit_mode">Clear Selection</string>
+<string name="multiple_entries_hint">To add multiple items simply enter them all at once, separated by semicolons. For example: &quot;Item 1;  Item2&quot;</string>
+<string name="manage_categories">Categories</string>
+<string name="app_menu_more">More</string>
+<string name="add_item_no_categories_defined">You have to add a category before adding a new item. To do that select \&quot;Add Category\&quot; from the menu.</string>
+
+</resources>

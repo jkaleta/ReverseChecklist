@@ -1,0 +1,8 @@
+
+
+syntax: regexp
+^bin$
+^javadoc.xml
+
+syntax: regexp
+^proguard$

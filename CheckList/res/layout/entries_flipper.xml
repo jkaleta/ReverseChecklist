@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent" android:id="@+id/flipper_view_root_layout"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<LinearLayout android:id="@+id/TopBarLayout"
+		android:layout_width="fill_parent" android:layout_height="40dip"
+		android:layout_alignParentTop="true">
+
+		<Button android:id="@+id/btn_select_all_in_category"
+			android:gravity="center" android:layout_height="fill_parent"
+			android:layout_width="0px" android:layout_weight="1"
+			android:textSize="10sp" android:text="@string/select_all_button_text"
+			android:ellipsize="end" android:textStyle="bold"/>
+
+		<Button android:id="@+id/btn_unselect_all_in_category"
+			android:layout_height="fill_parent" android:layout_width="0px"
+			android:layout_weight="1" android:gravity="center" android:textSize="10sp"
+			android:text="@string/unselect_all_button_text" android:ellipsize="end"
+			android:textStyle="bold"/>	
+		
+	</LinearLayout>
+	
+	<LinearLayout android:id="@+id/SortBarLayout"
+		android:layout_width="fill_parent" android:layout_height="40dip"
+		android:layout_below="@+id/TopBarLayout">
+		<Spinner android:layout_width="fill_parent"
+			android:layout_height="40sp" 
+			android:id="@+id/spinner_sort_items">		
+		</Spinner>
+	</LinearLayout>
+
+	<com.jakubkaleta.checklist.SafeViewFlipper android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/flipper_view" 
+		android:layout_below="@+id/SortBarLayout" android:layout_marginBottom="47dp" />
+
+	<LinearLayout android:id="@+id/InnerRelativeLayout"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" android:layout_below="@+id/flipper_view"
+		android:layout_marginTop="-47dip">
+
+		<Button android:id="@+id/btn_previous_category"
+			android:gravity="center" android:layout_height="fill_parent"
+			android:layout_width="0px" android:layout_weight="4"
+			android:textSize="10sp" android:text="Previous Category"
+			android:ellipsize="end" android:textStyle="bold"/>
+
+		<TextView android:id="@+id/txt_categories_info"
+			android:layout_height="fill_parent" android:layout_width="0px"
+			android:layout_weight="3" android:gravity="center" android:textSize="9sp"
+			android:text="Categories info"
+			android:textStyle="bold" />
+
+		<Button android:id="@+id/btn_next_category"
+			android:layout_height="fill_parent" android:layout_width="0px"
+			android:layout_weight="4" android:gravity="center" android:textSize="10sp"
+			android:text="Next Category" android:ellipsize="end"
+			android:textStyle="bold" />
+	</LinearLayout>
+
+</RelativeLayout>

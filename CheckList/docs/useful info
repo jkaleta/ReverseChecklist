@@ -1,0 +1,40 @@
+
+windows box - how to get to sqlite3:
+
+sqlite3 /data/data/com.jakubkaleta.checklist/databases/ActivitiesManager.db
+
+
+
+cd C:\Program Files (x86)\Android\android-sdk-windows\platform-tools
+adb -s emulator-5554 shell
+cd data/data/com.jakubkaleta.
+
+this launches the monkey and sends 500 pseudorandom events to it.
+monkey -p com.jakubkaleta.checklist --pct-majornav 40 --pct-touch 40 -v 2500 -s 1231
+
+
+Pre-publishing checklist
+1. Update code version number
+2. Update user friendly version number if applies.
+3. Run the monkey script 
+4. Update the screenshots and walkthrough if applies.\
+5. Publish
+
+Linking the commonsguy's library.
+
+To work with TouchListView in your own project, place the library project somewhere and update your project 
+to reference the library project (via Eclipse, via android update lib-project, etc.). 
+Then, add a com.commonsware.cwac.tlv.TouchListView widget to your XML layout file. You have five customizable attributes:
+
+http://developer.android.com/guide/developing/projects/projects-eclipse.html
+
+Coverage:
+
+1. Update all projects - 
+Checklist, Checklist test and CWAC Checklist as well. 
+Run all build tasks 
+Run the coverage task
+
+android update test-project -m "D:\EclipseWorkspace\CheckList" -p "D:\EclipseWorkspace\CheckListTest"
+
+
