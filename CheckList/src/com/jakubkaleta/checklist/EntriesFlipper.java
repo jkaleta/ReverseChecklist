@@ -342,6 +342,8 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		
 		flipper = (SafeViewFlipper) findViewById(R.id.flipper_view);
 
+		flipper = (SafeViewFlipper) findViewById(R.id.flipper_view);
+		
 		btnPreviousCategory = (Button) findViewById(R.id.btn_previous_category);
 		btnNextCategory = (Button) findViewById(R.id.btn_next_category);
 		txtCategoriesInfo = (TextView) findViewById(R.id.txt_categories_info);

@@ -27,19 +27,25 @@
 			android:contentDescription="@string/android_voice_recognition"
 			android:layout_width="wrap_content" android:layout_alignParentLeft="true" />
 
-		<EditText android:id="@+id/etxt_entry_name"
-			android:layout_centerVertical="true" android:layout_width="fill_parent"
-			android:layout_alignBaseline="@+id/btn_speak_now"
-			android:layout_height="wrap_content" android:maxLines="3"
-			android:lines="2" android:layout_marginRight="80dp"
-			android:inputType="text"
-			android:layout_marginLeft="50dp" android:singleLine="false">
+		<EditText
+		    android:id="@+id/etxt_entry_name"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_alignBaseline="@+id/btn_speak_now"
+		    android:layout_centerVertical="true"
+		    android:layout_toLeftOf="@+id/btn_add_edit_entry"
+		    android:layout_toRightOf="@+id/btn_speak_now"
+		    android:inputType="text"
+		    android:lines="2"
+		    android:maxLines="3"
+		    android:singleLine="false" >
+
 		</EditText>
 
 		<Button android:id="@+id/btn_add_edit_entry"
 			android:layout_centerVertical="true" android:layout_below="@+id/txt_entry_name"
 			android:layout_alignParentRight="true" android:text="@string/add_entry"
-			android:layout_width="80dp" android:layout_height="wrap_content"
+			android:layout_width="150dp" android:layout_height="wrap_content"
 			android:textSize="14sp" android:textStyle="bold" android:gravity="center"
 			android:state_enabled="false">
 		</Button>

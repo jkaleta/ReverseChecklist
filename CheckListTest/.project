@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>CheckListTest</name>
+	<name>reversechecklisttest-honeycomb</name>
 	<comment></comment>
 	<projects>
-		<project>CheckList</project>
+		<project>checklist-honeycomb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

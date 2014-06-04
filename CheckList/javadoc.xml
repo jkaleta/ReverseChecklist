@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-	<target name="javadoc">
-		<javadoc access="public" author="true" classpath="D:\Geek out Sessions\GitRepository\CWAC-touchlist\bin;lib/opencsv-2.3.jar;D:\android-sdk-windows\platforms\android-11\android.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.jakubkaleta.checklist.DataAccess,com.jakubkaleta.checklist.DataAccess.services,com.jakubkaleta.checklist,com.commonsware.cwac.tlv,com.jakubkaleta.checklist.DataAccess.tables,com.jakubkaleta.checklist.DataAccess.beans" source="1.6" sourcepath="src;D:\Geek out Sessions\GitRepository\CWAC-touchlist\src;gen" splitindex="true" use="true" version="true" encoding="ISO-8859-1">
-			<link href="file:/D:/android-sdk-windows/docs/reference" />
-		</javadoc>
-	</target>
-</project>
