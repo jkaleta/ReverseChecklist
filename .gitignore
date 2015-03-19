@@ -1,0 +1,5 @@
+/CheckList/bin
+/CheckList/bin/classes/com/jakubkaleta/checklist/*.class
+*.class
+/CheckList/bin/classes/com/jakubkaleta/checklist
+bin
