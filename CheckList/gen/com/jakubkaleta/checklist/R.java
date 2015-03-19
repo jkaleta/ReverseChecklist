@@ -9,9 +9,9 @@ package com.jakubkaleta.checklist;
 
 public final class R {
     public static final class array {
-        public static final int sort_options_for_activity_list=0x7f070000;
-        public static final int sort_options_for_category_list=0x7f070001;
-        public static final int sort_options_for_item_list=0x7f070002;
+        public static final int sort_options_for_activity_list=0x7f060000;
+        public static final int sort_options_for_category_list=0x7f060001;
+        public static final int sort_options_for_item_list=0x7f060002;
     }
     public static final class attr {
         /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
@@ -63,96 +63,96 @@ containing a value of this type.
         public static final int remove_mode=0x7f010004;
     }
     public static final class color {
-        public static final int quick_report_activity_name_color=0x7f060000;
-        public static final int quick_report_category_name_color=0x7f060001;
+        public static final int quick_report_activity_name_color=0x7f050000;
+        public static final int quick_report_category_name_color=0x7f050001;
     }
     public static final class drawable {
         public static final int appicon=0x7f020000;
         public static final int grabber=0x7f020001;
     }
     public static final class id {
-        public static final int InnerRelativeLayout=0x7f04002e;
-        public static final int SortBarLayout=0x7f04002b;
-        public static final int TopBarLayout=0x7f040028;
-        public static final int activities_context_menu_copy_item=0x7f040038;
-        public static final int activities_context_menu_edit_item=0x7f040037;
-        public static final int activities_context_menu_mark_all_done=0x7f040035;
-        public static final int activities_context_menu_mark_all_undone=0x7f040036;
-        public static final int activities_context_menu_remove_item=0x7f040039;
-        public static final int activity_name=0x7f04001b;
-        public static final int add_activity_group_layout=0x7f04000d;
-        public static final int add_category=0x7f040041;
-        public static final int add_category_group_layout=0x7f040013;
-        public static final int add_entry_group_layout=0x7f040018;
-        public static final int add_new_item=0x7f04004c;
-        public static final int btn_add_edit_activity=0x7f040010;
-        public static final int btn_add_edit_category=0x7f040015;
-        public static final int btn_add_edit_entry=0x7f04001a;
-        public static final int btn_export_all_data=0x7f040020;
-        public static final int btn_export_all_data_help=0x7f04001f;
-        public static final int btn_import_data=0x7f040022;
-        public static final int btn_import_data_help=0x7f040021;
-        public static final int btn_next_category=0x7f040031;
-        public static final int btn_previous_category=0x7f04002f;
-        public static final int btn_select_all_in_category=0x7f040029;
-        public static final int btn_speak_now=0x7f04000e;
-        public static final int btn_unselect_all_in_category=0x7f04002a;
-        public static final int categories_context_menu_edit_item=0x7f040046;
-        public static final int categories_context_menu_remove_item=0x7f040047;
-        public static final int category_name=0x7f04000b;
-        public static final int check_disable_prompt_in_todo_mode=0x7f04001e;
-        public static final int clear_list=0x7f04004f;
-        public static final int edit_category=0x7f040042;
-        public static final int entries_context_menu_edit_item=0x7f04004a;
-        public static final int entries_context_menu_remove_item=0x7f04004b;
-        public static final int entry_menu_manage_categories=0x7f040050;
-        public static final int etxt_activity_name=0x7f04000f;
-        public static final int etxt_category_name=0x7f040014;
-        public static final int etxt_entry_name=0x7f040019;
-        public static final int fling=0x7f040001;
-        public static final int flipper_view=0x7f04002d;
-        public static final int flipper_view_root_layout=0x7f040027;
-        public static final int home=0x7f040051;
-        public static final int icon=0x7f04001c;
-        public static final int item_counts=0x7f040008;
-        public static final int item_name=0x7f04000a;
-        public static final int label=0x7f040034;
-        public static final int last_updated=0x7f040009;
-        public static final int menu_activity_list_about=0x7f04003e;
-        public static final int menu_activity_list_exchange=0x7f040040;
-        public static final int menu_activity_list_help=0x7f04003d;
-        public static final int menu_activity_list_more=0x7f04003f;
-        public static final int menu_activity_list_quick_report=0x7f04003b;
-        public static final int menu_activity_list_settings=0x7f04003c;
-        public static final int menu_add_activity=0x7f04003a;
-        public static final int menu_all_todo_report_clear_list=0x7f040044;
-        public static final int menu_all_todo_report_email_me_this_report=0x7f040043;
-        public static final int menu_all_todo_report_home=0x7f040045;
-        public static final int menu_categories_add_category=0x7f040048;
-        public static final int menu_categories_home=0x7f040049;
-        public static final int menu_entries_flipper_quick_report=0x7f04004d;
-        public static final int menu_toggle_mode=0x7f04004e;
-        public static final int none=0x7f040000;
-        public static final int radio_merge_lists=0x7f040025;
-        public static final int radio_rename_duplicates=0x7f040026;
-        public static final int rbg_import_mode_selection=0x7f040024;
-        public static final int rbg_import_mode_selection_help=0x7f040023;
-        public static final int single_checkable_item=0x7f040032;
-        public static final int single_item_name=0x7f040007;
-        public static final int slide=0x7f040002;
-        public static final int slideLeft=0x7f040004;
-        public static final int slideRight=0x7f040003;
-        public static final int spinnerTarget=0x7f040033;
-        public static final int spinner_category=0x7f040016;
-        public static final int spinner_sort_activities=0x7f040005;
-        public static final int spinner_sort_items=0x7f04002c;
-        public static final int txt_activity_name=0x7f04000c;
-        public static final int txt_categories_info=0x7f040030;
-        public static final int txt_category_name=0x7f040012;
-        public static final int txt_config_disable_prompt_in_todo_mode=0x7f04001d;
-        public static final int txt_empty_list=0x7f040006;
-        public static final int txt_entry_name=0x7f040017;
-        public static final int txt_multiple_entries_hint=0x7f040011;
+        public static final int InnerRelativeLayout=0x7f08002e;
+        public static final int SortBarLayout=0x7f08002b;
+        public static final int TopBarLayout=0x7f080028;
+        public static final int activities_context_menu_copy_item=0x7f080038;
+        public static final int activities_context_menu_edit_item=0x7f080037;
+        public static final int activities_context_menu_mark_all_done=0x7f080035;
+        public static final int activities_context_menu_mark_all_undone=0x7f080036;
+        public static final int activities_context_menu_remove_item=0x7f080039;
+        public static final int activity_name=0x7f08001b;
+        public static final int add_activity_group_layout=0x7f08000d;
+        public static final int add_category=0x7f080041;
+        public static final int add_category_group_layout=0x7f080013;
+        public static final int add_entry_group_layout=0x7f080018;
+        public static final int add_new_item=0x7f08004c;
+        public static final int btn_add_edit_activity=0x7f080010;
+        public static final int btn_add_edit_category=0x7f080015;
+        public static final int btn_add_edit_entry=0x7f08001a;
+        public static final int btn_export_all_data=0x7f080020;
+        public static final int btn_export_all_data_help=0x7f08001f;
+        public static final int btn_import_data=0x7f080022;
+        public static final int btn_import_data_help=0x7f080021;
+        public static final int btn_next_category=0x7f080031;
+        public static final int btn_previous_category=0x7f08002f;
+        public static final int btn_select_all_in_category=0x7f080029;
+        public static final int btn_speak_now=0x7f08000e;
+        public static final int btn_unselect_all_in_category=0x7f08002a;
+        public static final int categories_context_menu_edit_item=0x7f080046;
+        public static final int categories_context_menu_remove_item=0x7f080047;
+        public static final int category_name=0x7f08000b;
+        public static final int check_disable_prompt_in_todo_mode=0x7f08001e;
+        public static final int clear_list=0x7f08004f;
+        public static final int edit_category=0x7f080042;
+        public static final int entries_context_menu_edit_item=0x7f08004a;
+        public static final int entries_context_menu_remove_item=0x7f08004b;
+        public static final int entry_menu_manage_categories=0x7f080050;
+        public static final int etxt_activity_name=0x7f08000f;
+        public static final int etxt_category_name=0x7f080014;
+        public static final int etxt_entry_name=0x7f080019;
+        public static final int fling=0x7f080000;
+        public static final int flipper_view=0x7f08002d;
+        public static final int flipper_view_root_layout=0x7f080027;
+        public static final int home=0x7f080051;
+        public static final int icon=0x7f08001c;
+        public static final int item_counts=0x7f080008;
+        public static final int item_name=0x7f08000a;
+        public static final int label=0x7f080034;
+        public static final int last_updated=0x7f080009;
+        public static final int menu_activity_list_about=0x7f08003e;
+        public static final int menu_activity_list_exchange=0x7f080040;
+        public static final int menu_activity_list_help=0x7f08003d;
+        public static final int menu_activity_list_more=0x7f08003f;
+        public static final int menu_activity_list_quick_report=0x7f08003b;
+        public static final int menu_activity_list_settings=0x7f08003c;
+        public static final int menu_add_activity=0x7f08003a;
+        public static final int menu_all_todo_report_clear_list=0x7f080044;
+        public static final int menu_all_todo_report_email_me_this_report=0x7f080043;
+        public static final int menu_all_todo_report_home=0x7f080045;
+        public static final int menu_categories_add_category=0x7f080048;
+        public static final int menu_categories_home=0x7f080049;
+        public static final int menu_entries_flipper_quick_report=0x7f08004d;
+        public static final int menu_toggle_mode=0x7f08004e;
+        public static final int none=0x7f080001;
+        public static final int radio_merge_lists=0x7f080025;
+        public static final int radio_rename_duplicates=0x7f080026;
+        public static final int rbg_import_mode_selection=0x7f080024;
+        public static final int rbg_import_mode_selection_help=0x7f080023;
+        public static final int single_checkable_item=0x7f080032;
+        public static final int single_item_name=0x7f080007;
+        public static final int slide=0x7f080002;
+        public static final int slideLeft=0x7f080003;
+        public static final int slideRight=0x7f080004;
+        public static final int spinnerTarget=0x7f080033;
+        public static final int spinner_category=0x7f080016;
+        public static final int spinner_sort_activities=0x7f080005;
+        public static final int spinner_sort_items=0x7f08002c;
+        public static final int txt_activity_name=0x7f08000c;
+        public static final int txt_categories_info=0x7f080030;
+        public static final int txt_category_name=0x7f080012;
+        public static final int txt_config_disable_prompt_in_todo_mode=0x7f08001d;
+        public static final int txt_empty_list=0x7f080006;
+        public static final int txt_entry_name=0x7f080017;
+        public static final int txt_multiple_entries_hint=0x7f080011;
     }
     public static final class layout {
         public static final int activity_list=0x7f030000;
@@ -174,96 +174,96 @@ containing a value of this type.
         public static final int touchlistview_row2=0x7f030010;
     }
     public static final class menu {
-        public static final int activities_context_menu=0x7f080000;
-        public static final int activities_menu=0x7f080001;
-        public static final int add_entry_menu=0x7f080002;
-        public static final int all_todo_items_report_menu=0x7f080003;
-        public static final int categories_context_menu=0x7f080004;
-        public static final int categories_menu=0x7f080005;
-        public static final int entries_context_menu=0x7f080006;
-        public static final int entry_menu=0x7f080007;
+        public static final int activities_context_menu=0x7f070000;
+        public static final int activities_menu=0x7f070001;
+        public static final int add_entry_menu=0x7f070002;
+        public static final int all_todo_items_report_menu=0x7f070003;
+        public static final int categories_context_menu=0x7f070004;
+        public static final int categories_menu=0x7f070005;
+        public static final int entries_context_menu=0x7f070006;
+        public static final int entry_menu=0x7f070007;
     }
     public static final class string {
-        public static final int activity_details=0x7f050004;
-        public static final int activity_name=0x7f050002;
-        public static final int add_activity=0x7f050001;
-        public static final int add_category=0x7f050032;
-        public static final int add_entry=0x7f05002f;
-        public static final int add_item_no_categories_defined=0x7f05004f;
-        public static final int all_to_do_items_email_subject=0x7f050029;
-        public static final int android_voice_recognition=0x7f050021;
-        public static final int app_about=0x7f050041;
-        public static final int app_menu_more=0x7f05004e;
-        public static final int app_name=0x7f05002a;
-        public static final int category_name=0x7f050031;
-        public static final int clear_list_in_edit_mode=0x7f05004b;
-        public static final int clear_list_in_todo_mode=0x7f05003c;
-        public static final int confirm_permanent_deletion_of_category=0x7f05003f;
-        public static final int confirm_permanent_deletion_of_item=0x7f05003e;
-        public static final int confirm_permanent_deletion_of_list=0x7f050048;
-        public static final int continue_prompt=0x7f05002c;
-        public static final int copy_list=0x7f050006;
-        public static final int copying_list=0x7f050007;
-        public static final int copying_list_failure=0x7f050009;
-        public static final int copying_list_success=0x7f050008;
-        public static final int database_exchange=0x7f050010;
-        public static final int disable_prompt_in_todo_mode=0x7f050049;
-        public static final int dragger_description=0x7f050025;
-        public static final int duplicate_name=0x7f05000a;
-        public static final int duplicate_name_exists_message=0x7f05000b;
-        public static final int edit_activity=0x7f050040;
-        public static final int edit_category=0x7f05003a;
-        public static final int edit_item=0x7f05003d;
-        public static final int email_to_me=0x7f050026;
-        public static final int empty_activity_list_default_value=0x7f050005;
-        public static final int empty_category_list_default_value=0x7f050033;
-        public static final int empty_list=0x7f050045;
-        public static final int empty_list_default_value=0x7f050035;
-        public static final int entry_name=0x7f050030;
-        public static final int export_data=0x7f05000f;
-        public static final int export_data_description=0x7f05000e;
-        public static final int exporting_data_to_csv=0x7f050011;
-        public static final int exporting_data_to_csv_fail=0x7f050013;
-        public static final int exporting_data_to_csv_success=0x7f050012;
-        public static final int help=0x7f050042;
-        public static final int help_icon_description=0x7f050024;
-        public static final int import_data=0x7f050014;
-        public static final int import_data_description=0x7f050015;
-        public static final int import_data_mode=0x7f05001f;
-        public static final int import_data_mode_explanation=0x7f050020;
-        public static final int import_data_mode_merge_lists=0x7f05001d;
-        public static final int import_data_mode_rename_lists=0x7f05001e;
-        public static final int import_select_file=0x7f050016;
-        public static final int importing_data_fail_file_empty=0x7f05001b;
-        public static final int importing_data_fail_invalid_file_name=0x7f050019;
-        public static final int importing_data_fail_invalid_structure=0x7f05001a;
-        public static final int importing_data_fail_other_error=0x7f05001c;
-        public static final int importing_data_from_csv=0x7f050017;
-        public static final int importing_data_success=0x7f050018;
-        public static final int item_counts=0x7f050044;
-        public static final int items=0x7f050038;
-        public static final int manage_categories=0x7f05004d;
-        public static final int mark_all_done=0x7f05000d;
-        public static final int mark_all_undone=0x7f05000c;
-        public static final int mark_item_done=0x7f050047;
-        public static final int multiple_entries_hint=0x7f05004c;
-        public static final int my_activities=0x7f050000;
-        public static final int no_string=0x7f05002e;
-        public static final int of=0x7f050037;
-        public static final int ok_string=0x7f050046;
-        public static final int questions_suggestions=0x7f050043;
-        public static final int quick_report_menu_item=0x7f050028;
-        public static final int remove_activity=0x7f050003;
-        public static final int remove_category=0x7f050034;
-        public static final int remove_item=0x7f050036;
-        public static final int save_changes=0x7f05003b;
-        public static final int select_all_button_text=0x7f050023;
-        public static final int selected=0x7f050039;
-        public static final int send_email_text=0x7f050027;
-        public static final int settings=0x7f05004a;
-        public static final int toggle_mode=0x7f05002b;
-        public static final int unselect_all_button_text=0x7f050022;
-        public static final int yes_string=0x7f05002d;
+        public static final int activity_details=0x7f040004;
+        public static final int activity_name=0x7f040002;
+        public static final int add_activity=0x7f040001;
+        public static final int add_category=0x7f040032;
+        public static final int add_entry=0x7f04002f;
+        public static final int add_item_no_categories_defined=0x7f04004f;
+        public static final int all_to_do_items_email_subject=0x7f040029;
+        public static final int android_voice_recognition=0x7f040021;
+        public static final int app_about=0x7f040041;
+        public static final int app_menu_more=0x7f04004e;
+        public static final int app_name=0x7f04002a;
+        public static final int category_name=0x7f040031;
+        public static final int clear_list_in_edit_mode=0x7f04004b;
+        public static final int clear_list_in_todo_mode=0x7f04003c;
+        public static final int confirm_permanent_deletion_of_category=0x7f04003f;
+        public static final int confirm_permanent_deletion_of_item=0x7f04003e;
+        public static final int confirm_permanent_deletion_of_list=0x7f040048;
+        public static final int continue_prompt=0x7f04002c;
+        public static final int copy_list=0x7f040006;
+        public static final int copying_list=0x7f040007;
+        public static final int copying_list_failure=0x7f040009;
+        public static final int copying_list_success=0x7f040008;
+        public static final int database_exchange=0x7f040010;
+        public static final int disable_prompt_in_todo_mode=0x7f040049;
+        public static final int dragger_description=0x7f040025;
+        public static final int duplicate_name=0x7f04000a;
+        public static final int duplicate_name_exists_message=0x7f04000b;
+        public static final int edit_activity=0x7f040040;
+        public static final int edit_category=0x7f04003a;
+        public static final int edit_item=0x7f04003d;
+        public static final int email_to_me=0x7f040026;
+        public static final int empty_activity_list_default_value=0x7f040005;
+        public static final int empty_category_list_default_value=0x7f040033;
+        public static final int empty_list=0x7f040045;
+        public static final int empty_list_default_value=0x7f040035;
+        public static final int entry_name=0x7f040030;
+        public static final int export_data=0x7f04000f;
+        public static final int export_data_description=0x7f04000e;
+        public static final int exporting_data_to_csv=0x7f040011;
+        public static final int exporting_data_to_csv_fail=0x7f040013;
+        public static final int exporting_data_to_csv_success=0x7f040012;
+        public static final int help=0x7f040042;
+        public static final int help_icon_description=0x7f040024;
+        public static final int import_data=0x7f040014;
+        public static final int import_data_description=0x7f040015;
+        public static final int import_data_mode=0x7f04001f;
+        public static final int import_data_mode_explanation=0x7f040020;
+        public static final int import_data_mode_merge_lists=0x7f04001d;
+        public static final int import_data_mode_rename_lists=0x7f04001e;
+        public static final int import_select_file=0x7f040016;
+        public static final int importing_data_fail_file_empty=0x7f04001b;
+        public static final int importing_data_fail_invalid_file_name=0x7f040019;
+        public static final int importing_data_fail_invalid_structure=0x7f04001a;
+        public static final int importing_data_fail_other_error=0x7f04001c;
+        public static final int importing_data_from_csv=0x7f040017;
+        public static final int importing_data_success=0x7f040018;
+        public static final int item_counts=0x7f040044;
+        public static final int items=0x7f040038;
+        public static final int manage_categories=0x7f04004d;
+        public static final int mark_all_done=0x7f04000d;
+        public static final int mark_all_undone=0x7f04000c;
+        public static final int mark_item_done=0x7f040047;
+        public static final int multiple_entries_hint=0x7f04004c;
+        public static final int my_activities=0x7f040000;
+        public static final int no_string=0x7f04002e;
+        public static final int of=0x7f040037;
+        public static final int ok_string=0x7f040046;
+        public static final int questions_suggestions=0x7f040043;
+        public static final int quick_report_menu_item=0x7f040028;
+        public static final int remove_activity=0x7f040003;
+        public static final int remove_category=0x7f040034;
+        public static final int remove_item=0x7f040036;
+        public static final int save_changes=0x7f04003b;
+        public static final int select_all_button_text=0x7f040023;
+        public static final int selected=0x7f040039;
+        public static final int send_email_text=0x7f040027;
+        public static final int settings=0x7f04004a;
+        public static final int toggle_mode=0x7f04002b;
+        public static final int unselect_all_button_text=0x7f040022;
+        public static final int yes_string=0x7f04002d;
     }
     public static final class styleable {
         /** Attributes that can be used with a TouchListView.
@@ -300,7 +300,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:dragndrop_background
+          @attr name com.jakubkaleta.checklist:dragndrop_background
         */
         public static final int TouchListView_dragndrop_background = 3;
         /**
@@ -316,7 +316,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:expanded_height
+          @attr name com.jakubkaleta.checklist:expanded_height
         */
         public static final int TouchListView_expanded_height = 1;
         /**
@@ -326,7 +326,7 @@ containing a value of this type.
 
           <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:grabber
+          @attr name com.jakubkaleta.checklist:grabber
         */
         public static final int TouchListView_grabber = 2;
         /**
@@ -342,7 +342,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name android:normal_height
+          @attr name com.jakubkaleta.checklist:normal_height
         */
         public static final int TouchListView_normal_height = 0;
         /**
@@ -362,7 +362,7 @@ containing a value of this type.
 <tr><td><code>slideRight</code></td><td>1</td><td></td></tr>
 <tr><td><code>slideLeft</code></td><td>2</td><td></td></tr>
 </table>
-          @attr name android:remove_mode
+          @attr name com.jakubkaleta.checklist:remove_mode
         */
         public static final int TouchListView_remove_mode = 4;
     };

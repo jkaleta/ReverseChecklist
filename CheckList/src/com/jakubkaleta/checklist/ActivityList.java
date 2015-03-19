@@ -66,6 +66,9 @@ public class ActivityList extends ListActivity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		//getLoaderManager().initLoader(0, null, this);
+		
 		resources = getResources();
 		dataAccessService = new DataAccessService(getContentResolver());
 
@@ -188,7 +191,7 @@ public class ActivityList extends ListActivity
 
 			activityListAdapter = new SimpleCursorAdapter(this, R.layout.activity_list_item,
 					mCursor, PROJECTION, new int[]
-					{ R.id.single_item_name, R.id.item_counts, R.id.last_updated });
+					{ R.id.single_item_name, R.id.item_counts, R.id.last_updated }, 0);
 
 			activityListAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder()
 			{

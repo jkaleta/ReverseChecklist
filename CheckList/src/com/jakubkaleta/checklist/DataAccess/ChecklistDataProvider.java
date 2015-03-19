@@ -395,7 +395,7 @@ public class ChecklistDataProvider extends ContentProvider {
                         qb.setTables("Activities " + activitiesLeftOuterJoinCategories
                                         + categoriesLeftOuterJoinEntries);
                         qb.setProjectionMap(sActivitiesProjectionMap);
-                        groupBy = ActivityColumns._ID;
+                        groupBy = ActivityColumns.TABLE_NAME + "." + ActivityColumns._ID;
                         break;
 
                 case APP_STATE:

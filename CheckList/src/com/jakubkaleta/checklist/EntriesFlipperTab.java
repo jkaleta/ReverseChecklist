@@ -81,7 +81,8 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 		currentConfiguration = service.getCurrentConfiguration();
 		this.contentObserver = new TabContentObserver(new Handler());
 		this.setDrawSelectorOnTop(true);	
-		setGrabberIcon(R.id.icon);
+		
+		//setGrabberIcon(R.id.icon);
 		
 		this.setDropListener(onDrop);
 	}
