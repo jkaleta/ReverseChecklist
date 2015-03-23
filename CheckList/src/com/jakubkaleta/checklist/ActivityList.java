@@ -3,6 +3,7 @@ package com.jakubkaleta.checklist;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -155,7 +156,7 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 					String dateCreated = cursor.getString(cursor.getColumnIndex(ActivityColumns.DATE_CREATED));
 
 					if (dateCreated != null && !dateCreated.equalsIgnoreCase("")) {
-						SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
+						SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
 						try {
 							Date convertedDate = new Date(Long.parseLong(dateCreated));
 							String formattedDate = dateFormat.format(convertedDate);
@@ -287,12 +288,12 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 
 		case R.id.activities_context_menu_mark_all_done:
 			dataAccessService.markAllItemsSelected(info.id, false);
-			activityListAdapter.getCursor().requery();
+			reload();
 			return true;
 
 		case R.id.activities_context_menu_mark_all_undone:
 			dataAccessService.markAllItemsSelected(info.id, true);
-			activityListAdapter.getCursor().requery();
+			reload();
 			return true;
 
 		default:
@@ -496,8 +497,7 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 				Toast toast = Toast.makeText(ActivityList.this, toastText, Toast.LENGTH_SHORT);
 				toast.show();
 
-				// finally, requery the cursor, to refresh the list
-				((SimpleCursorAdapter) getListView().getAdapter()).getCursor().requery();
+				reload();
 			}
 		}
 	}
