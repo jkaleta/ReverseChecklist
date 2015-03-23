@@ -11,7 +11,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.jakubkaleta.checklist.Utilities;
 import com.jakubkaleta.checklist.DataAccess.CategorySortOrder;
 import com.jakubkaleta.checklist.DataAccess.beans.ActivitiesDataSource;
 import com.jakubkaleta.checklist.DataAccess.beans.ActivityBean;
@@ -380,7 +379,7 @@ public class DataAccessService
 		if (idsOfActivitiesToGet != null && idsOfActivitiesToGet.length > 0)
 		{
 			filter = ActivityColumns.TABLE_NAME + "." + ActivityColumns._ID + " IN ( "
-					+ Utilities.join(", ", idsOfActivitiesToGet) + " ) ";
+					+ com.jakubkaleta.checklist.util.Utilities.join(", ", idsOfActivitiesToGet) + " ) ";
 		}
 
 		String sortOrder = ActivityColumns.TABLE_NAME + "." + ActivityColumns._ID + " ASC, "

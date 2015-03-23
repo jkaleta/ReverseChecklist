@@ -1,4 +1,4 @@
-package com.jakubkaleta.checklist;
+package com.jakubkaleta.checklist.util;
 
 import android.content.Context;
 import android.util.AttributeSet;

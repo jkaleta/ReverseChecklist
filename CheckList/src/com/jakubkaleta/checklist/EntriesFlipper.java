@@ -42,6 +42,7 @@ import com.jakubkaleta.checklist.DataAccess.services.DataAccessService;
 import com.jakubkaleta.checklist.DataAccess.tables.AppStateColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
+import com.jakubkaleta.checklist.util.SafeViewFlipper;
 
 /**
  * This activity displays all items in a selected list and allows for switching
