@@ -120,7 +120,6 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 		registerForContextMenu(lv);
 
 		mCallbacks = this;
-
 		LoaderManager lm = getLoaderManager();
 		lm.initLoader(LOADER_ID, null, mCallbacks);
 
@@ -181,28 +180,23 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		switch (loader.getId()) {
-		case LOADER_ID:
+		cursor.registerContentObserver(new ContentObserver(new Handler()) {
+			@Override
+			public void onChange(boolean selfChange) {
+				// hide the list sort drop down if no items in the list
+				if (activityListAdapter.isEmpty())
+					sortOptionsSpinner.setVisibility(View.GONE);
+				else
+					sortOptionsSpinner.setVisibility(View.VISIBLE);
+			}
 
-			cursor.registerContentObserver(new ContentObserver(new Handler()) {
-				@Override
-				public void onChange(boolean selfChange) {
-					// hide the list sort drop down if no items in the list
-					if (activityListAdapter.isEmpty())
-						sortOptionsSpinner.setVisibility(View.GONE);
-					else
-						sortOptionsSpinner.setVisibility(View.VISIBLE);
-				}
+			@Override
+			public boolean deliverSelfNotifications() {
+				return true;
+			}
+		});
 
-				@Override
-				public boolean deliverSelfNotifications() {
-					return true;
-				}
-			});
-
-			activityListAdapter.swapCursor(cursor);
-			break;
-		}
+		activityListAdapter.swapCursor(cursor);
 	}
 
 	@Override

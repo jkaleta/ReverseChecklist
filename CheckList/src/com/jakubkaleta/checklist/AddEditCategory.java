@@ -3,15 +3,21 @@ package com.jakubkaleta.checklist;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns;
 
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,10 +29,10 @@ import android.widget.TextView;
 
 /**
  * The activity for managing (adding, removing, editing) categories.
- * @author Jakub Kaleta 
+ * 
+ * @author Jakub Kaleta
  */
-public class AddEditCategory extends Activity
-{
+public class AddEditCategory extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 	private long activity_id;
 	private long category_id;
 	private String mode;
@@ -36,15 +42,16 @@ public class AddEditCategory extends Activity
 	private TextView addMultipleItemsHint;
 	private Resources resources;
 
+	private static final int LOADER_ID = 3;
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
+
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1;
 
-	private static final String[] CATEGORY_PROJECTION = new String[]
-	{ CategoryColumns._ID, CategoryColumns.CATEGORY_NAME };
+	private static final String[] CATEGORY_PROJECTION = new String[] { CategoryColumns._ID, CategoryColumns.CATEGORY_NAME };
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_edit_category);
 
@@ -57,41 +64,29 @@ public class AddEditCategory extends Activity
 
 		resources = getResources();
 
-		addEditCategory.setEnabled(mode.equalsIgnoreCase("EDIT"));	
-		
-		if (mode.equalsIgnoreCase("EDIT"))
-		{
+		addEditCategory.setEnabled(mode.equalsIgnoreCase("EDIT"));
+
+		if (mode.equalsIgnoreCase("EDIT")) {
 			addMultipleItemsHint.setVisibility(View.GONE);
 			addEditCategory.setText(resources.getString(R.string.save_changes));
 			setTitle(resources.getString(R.string.edit_category));
 
 			category_id = getIntent().getLongExtra("categoryId", 0);
 
-			// query all categories for the given activity id and set up tabs
-			// for each category. Get a cursor to access the note
-			Cursor mCursor = managedQuery(CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION,
-					CategoryColumns.TABLE_NAME + "." + CategoryColumns._ID + " = " + category_id, null,
-					CategoryColumns.DEFAULT_SORT_ORDER);
-
-			mCursor.moveToFirst();
-
-			categoryName.setText(mCursor.getString(mCursor
-					.getColumnIndex(CategoryColumns.CATEGORY_NAME)));
-		}
-		else
-		{
+			mCallbacks = this;
+			LoaderManager lm = getLoaderManager();
+			lm.initLoader(LOADER_ID, null, mCallbacks);
+			// see loader methods for loading details
+		} else {
 			addMultipleItemsHint.setVisibility(View.VISIBLE);
 			addEditCategory.setText(resources.getString(R.string.add_category));
 			setTitle(resources.getString(R.string.add_category));
 		}
 
-		addEditCategory.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View view)
-			{
+		addEditCategory.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
 				Intent intentToPassBack = new Intent();
-				intentToPassBack.putExtra(CategoryColumns.CATEGORY_NAME, categoryName.getText()
-						.toString());
+				intentToPassBack.putExtra(CategoryColumns.CATEGORY_NAME, categoryName.getText().toString());
 				intentToPassBack.putExtra(CategoryColumns.ACTIVITY_ID, activity_id);
 				intentToPassBack.putExtra("MODE", mode);
 				if (mode.equalsIgnoreCase("EDIT"))
@@ -102,24 +97,17 @@ public class AddEditCategory extends Activity
 			}
 		});
 
-		categoryName.addTextChangedListener(new TextWatcher()
-		{
-			public void afterTextChanged(Editable s)
-			{
+		categoryName.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
 			}
 
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				try
-				{
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				try {
 					addEditCategory.setEnabled(categoryName.getText().length() > 0);
-				}
-				catch (NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 				}
 			}
 		});
@@ -129,36 +117,46 @@ public class AddEditCategory extends Activity
 
 		// Check to see if a recognition activity is present
 		PackageManager pm = getPackageManager();
-		List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
-				RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-		if (activities.size() != 0)
-		{
-			speakButton.setOnClickListener(new View.OnClickListener()
-			{
-				public void onClick(View v)
-				{
-					if (v.getId() == R.id.btn_speak_now)
-					{
+		List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+		if (activities.size() != 0) {
+			speakButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (v.getId() == R.id.btn_speak_now) {
 						startVoiceRecognitionActivity();
 					}
 				}
 			});
-		}
-		else
-		{
+		} else {
 			speakButton.setEnabled(false);
 		}
 
 	}
 
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new CursorLoader(AddEditCategory.this, CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION, CategoryColumns.TABLE_NAME + "."
+				+ CategoryColumns._ID + " = " + category_id, null, CategoryColumns.DEFAULT_SORT_ORDER);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		cursor.moveToFirst();
+		// query all categories for the given activity id and set up tabs
+		// for each category. Get a cursor to access the note
+		categoryName.setText(cursor.getString(cursor.getColumnIndex(CategoryColumns.CATEGORY_NAME)));
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		// do nothing
+	}
+
 	/**
 	 * Fire an intent to start the speech recognition activity.
 	 */
-	private void startVoiceRecognitionActivity()
-	{
+	private void startVoiceRecognitionActivity() {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
@@ -166,16 +164,13 @@ public class AddEditCategory extends Activity
 	 * Handle the results from the recognition activity.
 	 */
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK)
-		{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			// Fill the text box with the strings the recognizer thought it
 			// could have heard
-			ArrayList<String> matches = data
-					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			if (!matches.isEmpty())
-				categoryName.setText(matches.get(0));	
+				categoryName.setText(matches.get(0));
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
