@@ -2,10 +2,13 @@ package com.jakubkaleta.checklist;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,26 +27,27 @@ import android.widget.SimpleCursorAdapter;
 import com.commonsware.cwac.tlv.TouchListView;
 import com.jakubkaleta.checklist.DataAccess.services.DataAccessService;
 import com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns;
+import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
 
 /**
  * Displays all categories for a single activity
  * 
  * @author Jakub Kaleta
  */
-public class CategoryList extends ListActivity
-{
+public class CategoryList extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	SimpleCursorAdapter categoryListAdapter;
 	private DataAccessService dataAccessService;
 	private String TAG = this.getClass().toString();
 	private long activityId;
 
-	private static final String[] CATEGORY_PROJECTION = new String[]
-	{ CategoryColumns.CATEGORY_NAME, CategoryColumns._ID };
+	private static final int LOADER_ID = 7;
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
+
+	private static final String[] CATEGORY_PROJECTION = new String[] { CategoryColumns.CATEGORY_NAME, CategoryColumns._ID };
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		dataAccessService = new DataAccessService(getContentResolver());
 		activityId = getIntent().getLongExtra("ActivityId", 1);
@@ -51,8 +55,8 @@ public class CategoryList extends ListActivity
 		// Use a custom layout file
 		setContentView(R.layout.category_list);
 
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-				R.array.sort_options_for_category_list, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options_for_category_list,
+				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		TouchListView lv = (TouchListView) getListView();
@@ -60,10 +64,8 @@ public class CategoryList extends ListActivity
 		// this is what is going to be showed if the list is empty.
 		lv.setEmptyView(findViewById(R.id.txt_empty_list));
 
-		lv.setOnItemClickListener(new OnItemClickListener()
-		{
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
+		lv.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// open activity details:
 				Intent intent = new Intent(getApplicationContext(), EntriesFlipper.class);
 				Cursor cursor = (Cursor) parent.getItemAtPosition(position);
@@ -79,73 +81,62 @@ public class CategoryList extends ListActivity
 
 		// register all items in the menu for context menu
 		registerForContextMenu(lv);
+
+		categoryListAdapter = new SimpleCursorAdapter(this, R.layout.touchlistview_row2, null, CATEGORY_PROJECTION,
+				new int[] { R.id.label }, 0);
+
+		setListAdapter(categoryListAdapter);
+
+		mCallbacks = this;
+		LoaderManager lm = getLoaderManager();
+		lm.initLoader(LOADER_ID, null, mCallbacks);
 	}
 
-	private TouchListView.DropListener onDrop = new TouchListView.DropListener()
-	{
+	private TouchListView.DropListener onDrop = new TouchListView.DropListener() {
 		@Override
-		public void drop(int from, int to)
-		{
+		public void drop(int from, int to) {
 			// get the id of category at position 'from'
 			int itemId = (int) categoryListAdapter.getItemId(from);
 			dataAccessService.updateUserDefinedSort(activityId, itemId, from, to);
 		}
 	};
-
+	
 	@Override
-	public void onPostCreate(Bundle savedInstanceState)
-	{
-		super.onPostCreate(savedInstanceState);
-		bindTheList();
-	}
-
-	private void bindTheList()
-	{
-		try
-		{
-			// Get a cursor to access the note
-			Cursor mCursor = managedQuery(CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION,
-					CategoryColumns.ACTIVITY_ID + " = " + activityId, null,
-					CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
-
-			categoryListAdapter = new SimpleCursorAdapter(this, R.layout.touchlistview_row2,
-					mCursor, CATEGORY_PROJECTION, new int[]
-					{ R.id.label });
-
-			setListAdapter(categoryListAdapter);
-		}
-		catch (Exception e)
-		{
-			Log.e(TAG, "Exception when querying for data " + e.getMessage());
-		}
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new CursorLoader(CategoryList.this, CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION, CategoryColumns.ACTIVITY_ID + " = "
+				+ activityId, null, CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-	{
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		categoryListAdapter.swapCursor(cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		categoryListAdapter.swapCursor(null);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.categories_context_menu, menu);
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
-	{
+	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info;
-		try
-		{
+		try {
 			info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		}
-		catch (ClassCastException e)
-		{
+		} catch (ClassCastException e) {
 			Log.e(TAG, "bad menuInfo", e);
 			return false;
 		}
 
 		Uri categoryUri = ContentUris.withAppendedId(CategoryColumns.CONTENT_URI, info.id);
 
-		switch (item.getItemId())
-		{
+		switch (item.getItemId()) {
 		case R.id.categories_context_menu_remove_item:
 			// Delete the note that the context menu is for
 			deleteCategory(categoryUri);
@@ -164,17 +155,13 @@ public class CategoryList extends ListActivity
 		}
 	}
 
-	private final void deleteCategory(Uri uriToDelete)
-	{
+	private final void deleteCategory(Uri uriToDelete) {
 		final Uri uriToBeDeleted = uriToDelete;
 
-		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-		{
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				switch (which)
-				{
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 					getContentResolver().delete(uriToBeDeleted, null, null);
 					break;
@@ -187,15 +174,13 @@ public class CategoryList extends ListActivity
 		};
 
 		final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-		dialogBuilder.setTitle(R.string.remove_category).setMessage(
-				R.string.confirm_permanent_deletion_of_category).setPositiveButton(
-				R.string.yes_string, dialogClickListener).setNegativeButton(R.string.no_string,
-				dialogClickListener).show();
+		dialogBuilder.setTitle(R.string.remove_category).setMessage(R.string.confirm_permanent_deletion_of_category)
+				.setPositiveButton(R.string.yes_string, dialogClickListener).setNegativeButton(R.string.no_string, dialogClickListener)
+				.show();
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate menu from XML resource
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.categories_menu, menu);
@@ -207,14 +192,12 @@ public class CategoryList extends ListActivity
 	private final int EDITED_EXISTING_CATEGORY = 1;
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent myIntent = new Intent(getApplicationContext(), AddEditCategory.class);
 		myIntent.putExtra("activityId", activityId);
 
 		// Handle item selection
-		switch (item.getItemId())
-		{
+		switch (item.getItemId()) {
 		case R.id.menu_categories_add_category:
 			myIntent.putExtra("mode", "ADD");
 			startActivityForResult(myIntent, ADDED_NEW_CATEGORY);
@@ -230,10 +213,8 @@ public class CategoryList extends ListActivity
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		if (requestCode == ADDED_NEW_CATEGORY && resultCode == RESULT_OK)
-		{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == ADDED_NEW_CATEGORY && resultCode == RESULT_OK) {
 			Bundle e = data.getExtras();
 			ContentValues values = new ContentValues();
 			String categoryName = e.getString(CategoryColumns.CATEGORY_NAME);
@@ -242,33 +223,25 @@ public class CategoryList extends ListActivity
 			// in add mode, it is actually possible to add multiple items at
 			// once
 			// if that's the case, we need to detect that and make it happen
-			if (categoryName.contains(";"))
-			{
+			if (categoryName.contains(";")) {
 				String[] temp = categoryName.split(";");
-				for (int i = 0; i < temp.length; i++)
-				{
+				for (int i = 0; i < temp.length; i++) {
 					String toInsert = temp[i].trim();
 					// skip empty entries
-					if (!toInsert.equalsIgnoreCase(""))
-					{
+					if (!toInsert.equalsIgnoreCase("")) {
 						values.put(CategoryColumns.CATEGORY_NAME, toInsert);
 						getContentResolver().insert(CategoryColumns.CONTENT_URI, values);
 					}
 				}
-			}
-			else
-			{
+			} else {
 				values.put(CategoryColumns.CATEGORY_NAME, categoryName.trim());
 				getContentResolver().insert(CategoryColumns.CONTENT_URI, values);
 			}
-		}
-		else if (requestCode == EDITED_EXISTING_CATEGORY && resultCode == RESULT_OK)
-		{
+		} else if (requestCode == EDITED_EXISTING_CATEGORY && resultCode == RESULT_OK) {
 			Bundle e = data.getExtras();
 			ContentValues values = new ContentValues();
 			values.put(CategoryColumns.CATEGORY_NAME, e.getString(CategoryColumns.CATEGORY_NAME).trim());
-			Uri itemUri = ContentUris.withAppendedId(CategoryColumns.CONTENT_URI, e
-					.getLong(CategoryColumns._ID));
+			Uri itemUri = ContentUris.withAppendedId(CategoryColumns.CONTENT_URI, e.getLong(CategoryColumns._ID));
 			getContentResolver().update(itemUri, values, null, null);
 		}
 
