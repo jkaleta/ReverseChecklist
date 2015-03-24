@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -51,8 +54,7 @@ import com.jakubkaleta.checklist.util.SafeViewFlipper;
  * @author Jakub Kaleta
  * 
  */
-public class EntriesFlipper extends Activity implements OnClickListener
-{
+public class EntriesFlipper extends Activity implements OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 	// activity id should have been passed in to this view
 	private long currentActivityId;
 	private String currentMode;
@@ -65,8 +67,8 @@ public class EntriesFlipper extends Activity implements OnClickListener
 
 	private ArrayList<CategoryBean> categories = new ArrayList<CategoryBean>();
 
-	private static final String[] CATEGORY_PROJECTION = new String[]
-	{ CategoryColumns._ID, CategoryColumns.CATEGORY_NAME, CategoryColumns.ITEM_COUNT, CategoryColumns.CATEGORY_SORT_ORDER};
+	private static final String[] CATEGORY_PROJECTION = new String[] { CategoryColumns._ID, CategoryColumns.CATEGORY_NAME,
+			CategoryColumns.ITEM_COUNT, CategoryColumns.CATEGORY_SORT_ORDER };
 
 	private static final int ADDED_NEW_ENTRY = 0;
 	private static final int EDITED_ENTRY = 1;
@@ -76,13 +78,18 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	private static final String MODE_NULL_VALUE = "EDIT";
 	private Button btnPreviousCategory;
 	private Button btnNextCategory;
-	
+
 	private Button btnSelectAllFromCategory;
 	private Button btnUnselectAllFromCategory;
 
 	private TextView txtCategoriesInfo;
-	
+
 	private Spinner sortSpinner;
+
+	private static final int LOADER_ID = 9;
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
+	
+	private long categoryIdToRestore = -1;
 
 	// delegates
 	/**
@@ -92,8 +99,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	 * @author Kuba
 	 * 
 	 */
-	public interface MetadataUpdater
-	{
+	public interface MetadataUpdater {
 		/**
 		 * Call this method to update metadata in the creator of the calling
 		 * object.
@@ -112,8 +118,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	 * @author Kuba
 	 * 
 	 */
-	public interface DisplayedCategoryGetter
-	{
+	public interface DisplayedCategoryGetter {
 		/**
 		 * Call to get currently displayed category id
 		 * 
@@ -122,8 +127,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		long getDisplayedCategoryId();
 	}
 
-	private void clearAllItemsFromTheList()
-	{
+	private void clearAllItemsFromTheList() {
 		// Get out updates into the provider.
 		ContentValues values = new ContentValues();
 
@@ -133,34 +137,24 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		// the update completes
 		// the content provider will notify the cursor of the
 		// change, which will cause the UI to be updated.
-		try
-		{
+		try {
 			Log.i(TAG, "Updating all tasks to Done.");
 
-			String[] strArray =
-			{ "" + currentCategoryId };
-			getContentResolver().update(EntryColumns.CONTENT_URI, values,
-					EntryColumns.CATEGORY_ID + "= ?", strArray);
-
-			setUpActivity(-1);
-		}
-		catch (NullPointerException e)
-		{
+			String[] strArray = { "" + currentCategoryId };
+			getContentResolver().update(EntryColumns.CONTENT_URI, values, EntryColumns.CATEGORY_ID + "= ?", strArray);
+			reload(-1);
+		} catch (NullPointerException e) {
 			Log.e(TAG, "Exception when updating data " + e.getMessage());
 		}
 	}
 
-	private final void deleteEntry(Uri uriToDelete)
-	{
+	private final void deleteEntry(Uri uriToDelete) {
 		final Uri uriToBeDeleted = uriToDelete;
 
-		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-		{
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				switch (which)
-				{
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 					// in case there is only one element in the list
 					// after a successful update the list must be removed from
@@ -169,7 +163,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 					// Delete the note that the context menu is for
 					getContentResolver().delete(uriToBeDeleted, null, null);
 					if (listMustBeRemoved)
-						setUpActivity(-1);
+						reload(-1);
 					break;
 
 				case DialogInterface.BUTTON_NEGATIVE:
@@ -180,17 +174,14 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		};
 
 		final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-		dialogBuilder.setTitle(R.string.remove_item).setMessage(
-				R.string.confirm_permanent_deletion_of_item).setPositiveButton(R.string.yes_string,
-				dialogClickListener).setNegativeButton(R.string.no_string, dialogClickListener)
+		dialogBuilder.setTitle(R.string.remove_item).setMessage(R.string.confirm_permanent_deletion_of_item)
+				.setPositiveButton(R.string.yes_string, dialogClickListener).setNegativeButton(R.string.no_string, dialogClickListener)
 				.show();
 
 	}
 
-	private Pair<Integer, CategoryBean> findCategory(long catId)
-	{
-		for (int i = 0; i < categories.size(); i++)
-		{
+	private Pair<Integer, CategoryBean> findCategory(long catId) {
+		for (int i = 0; i < categories.size(); i++) {
 			CategoryBean category = categories.get(i);
 			if (category.getId() == catId)
 				return new Pair<Integer, CategoryBean>(i, category);
@@ -199,17 +190,15 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		return null;
 	}
 
-	private int getSelectedItemsCount(ListView lv)
-	{
-		// In todo mode all items are always selected	
-		if(inToDoMode())
+	private int getSelectedItemsCount(ListView lv) {
+		// In todo mode all items are always selected
+		if (inToDoMode())
 			return lv.getCount();
-		
+
 		SparseBooleanArray array = lv.getCheckedItemPositions();
 
 		int count = 0;
-		for (int i = 0; i < array.size(); i++)
-		{
+		for (int i = 0; i < array.size(); i++) {
 			if (array.get(i))
 				count++;
 		}
@@ -218,13 +207,10 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (resultCode == RESULT_OK
-				&& (requestCode == ADDED_NEW_ENTRY || requestCode == EDITED_ENTRY))
-		{
+		if (resultCode == RESULT_OK && (requestCode == ADDED_NEW_ENTRY || requestCode == EDITED_ENTRY)) {
 			// the activity results with those request codes use the same
 			// content types.
 			// so let's extract all the extras here:
@@ -237,37 +223,29 @@ public class EntriesFlipper extends Activity implements OnClickListener
 			values.put(EntryColumns.CATEGORY_ID, categoryId);
 			values.put(EntryColumns.IS_SELECTED, inToDoMode() ? 1 : 0);
 
-			switch (requestCode)
-			{
+			switch (requestCode) {
 			case ADDED_NEW_ENTRY:
 				// in add mode, it is actually possible to add multiple items at
 				// once
 				// if that's the case, we need to detect that and make it happen
-				if (entryName.contains(";"))
-				{
+				if (entryName.contains(";")) {
 					String[] temp = entryName.split(";");
-					for (int i = 0; i < temp.length; i++)
-					{
+					for (int i = 0; i < temp.length; i++) {
 						String toInsert = temp[i].trim();
 						// skip empty entries
-						if (!toInsert.equalsIgnoreCase(""))
-						{
+						if (!toInsert.equalsIgnoreCase("")) {
 							values.put(EntryColumns.ENTRY_NAME, toInsert);
 							getContentResolver().insert(EntryColumns.CONTENT_URI, values);
 						}
 					}
-				}
-				else
-				{
+				} else {
 					getContentResolver().insert(EntryColumns.CONTENT_URI, values);
 				}
 				break;
 
 			case EDITED_ENTRY:
 				long editedEntryId = e.getLong(EntryColumns._ID);
-				getContentResolver().update(
-						ContentUris.withAppendedId(EntryColumns.CONTENT_URI, editedEntryId),
-						values, null, null);
+				getContentResolver().update(ContentUris.withAppendedId(EntryColumns.CONTENT_URI, editedEntryId), values, null, null);
 				break;
 			}
 
@@ -278,10 +256,8 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	public void onClick(View v)
-	{
-		switch (v.getId())
-		{
+	public void onClick(View v) {
+		switch (v.getId()) {
 		case R.id.btn_next_category:
 			flipper.showNext();
 			setCurrentCategoryTitleAndInfo(true);
@@ -300,22 +276,17 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item)
-	{
+	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info;
-		try
-		{
+		try {
 			info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		}
-		catch (ClassCastException e)
-		{
+		} catch (ClassCastException e) {
 			Log.e(TAG, "bad menuInfo", e);
 			return false;
 		}
 
 		Uri itemUri = ContentUris.withAppendedId(EntryColumns.CONTENT_URI, info.id);
-		switch (item.getItemId())
-		{
+		switch (item.getItemId()) {
 		case R.id.entries_context_menu_remove_item:
 			// Delete the note that the context menu is for
 			deleteEntry(itemUri);
@@ -335,64 +306,56 @@ public class EntriesFlipper extends Activity implements OnClickListener
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.entries_flipper);
 		resources = getResources();
-		
-		flipper = (SafeViewFlipper) findViewById(R.id.flipper_view);
 
 		flipper = (SafeViewFlipper) findViewById(R.id.flipper_view);
-		
+
 		btnPreviousCategory = (Button) findViewById(R.id.btn_previous_category);
 		btnNextCategory = (Button) findViewById(R.id.btn_next_category);
 		txtCategoriesInfo = (TextView) findViewById(R.id.txt_categories_info);
-		
+
 		btnSelectAllFromCategory = (Button) findViewById(R.id.btn_select_all_in_category);
-		btnUnselectAllFromCategory = (Button) findViewById(R.id.btn_unselect_all_in_category);		
+		btnUnselectAllFromCategory = (Button) findViewById(R.id.btn_unselect_all_in_category);
 		btnSelectAllFromCategory.setText(resources.getString(R.string.mark_all_undone));
 		btnUnselectAllFromCategory.setText(resources.getString(R.string.mark_all_done));
-				
+
 		sortSpinner = (Spinner) findViewById(R.id.spinner_sort_items);
-		
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-				R.array.sort_options_for_item_list, android.R.layout.simple_spinner_item);
+
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options_for_item_list,
+				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		sortSpinner.setAdapter(adapter);
 
-		sortSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
-		{
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
+		sortSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				// ignore the arguments. All we want to do is to
 				// save the state and rebind the list
-				Pair<Integer,CategoryBean> currentCategory = findCategory(currentCategoryId);
-				if(currentCategory != null)
-				{
+				Pair<Integer, CategoryBean> currentCategory = findCategory(currentCategoryId);
+				if (currentCategory != null) {
 					boolean savedState = saveCurrentCategorySortSelection(currentCategory.second);
-					if(savedState)
-					{
-						EntriesFlipperTab currentTab = (EntriesFlipperTab) flipper.getCurrentView();						
+					if (savedState) {
+						EntriesFlipperTab currentTab = (EntriesFlipperTab) flipper.getCurrentView();
 						currentTab.reload(gestureListener, currentCategory.second);
 					}
 				}
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> arg0)
-			{
+			public void onNothingSelected(AdapterView<?> arg0) {
 				// In this implementation of the dropdown list, it is not
 				// possible
 				// to have nothing selected. The list is always sorted by
 				// something
 			}
 		});
-		
+
 		btnPreviousCategory.setOnClickListener(this);
-		btnNextCategory.setOnClickListener(this);	
-		btnSelectAllFromCategory.setOnClickListener(this);	
-		btnUnselectAllFromCategory.setOnClickListener(this);	
+		btnNextCategory.setOnClickListener(this);
+		btnSelectAllFromCategory.setOnClickListener(this);
+		btnUnselectAllFromCategory.setOnClickListener(this);
 
 		dataAccessService = new DataAccessService(getContentResolver());
 
@@ -401,38 +364,61 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		// 2. Switching orientation or resuming the app
 		// In the first case, savedInstanceState will not have values necessary
 		// to restore state.
-		if (savedInstanceState != null && savedInstanceState.containsKey("CategoryId")
-				&& savedInstanceState.containsKey("ActivityId")
-				&& savedInstanceState.containsKey("Mode"))
-		{
+		if (savedInstanceState != null && savedInstanceState.containsKey("CategoryId") && savedInstanceState.containsKey("ActivityId")
+				&& savedInstanceState.containsKey("Mode")) {
 			currentActivityId = savedInstanceState.getLong("ActivityId");
 			currentCategoryId = savedInstanceState.getLong("CategoryId");
 			currentMode = savedInstanceState.getString("Mode");
-		}
-		else
-		{
+		} else {
 			// because the activity is just being created,
 			// the state must be reset to default values
 			saveState(ACTIVITY_ID_NULL_VALUE, CATEGORY_ID_NULL_VALUE, MODE_NULL_VALUE);
 		}
+
+		mCallbacks = this;
+		LoaderManager lm = getLoaderManager();
+		lm.initLoader(LOADER_ID, null, mCallbacks);
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-	{
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+		String selection = CategoryColumns.ACTIVITY_ID + " = " + currentActivityId;
+		if (inToDoMode())
+			selection += " AND " + EntryColumns.IS_SELECTED + "= 1";
+
+		return new CursorLoader(EntriesFlipper.this, CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION, selection, null,
+				CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		setUpActivity(categoryIdToRestore, cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		setUpActivity(-1, null);
+	}
+	
+	public void reload(long categoryId) {
+		categoryIdToRestore = categoryId;
+		getLoaderManager().restartLoader(LOADER_ID, null, this);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 
 		// we only want to show the menu in edit mode,
-		if (inEditMode())
-		{
+		if (inEditMode()) {
 			MenuInflater inflater = getMenuInflater();
 			inflater.inflate(R.menu.entries_context_menu, menu);
 		}
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate menu from XML resource
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.entry_menu, menu);
@@ -441,37 +427,29 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
-		int clearListModeTitle = inEditMode() ? R.string.clear_list_in_edit_mode
-				: R.string.clear_list_in_todo_mode;
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		int clearListModeTitle = inEditMode() ? R.string.clear_list_in_edit_mode : R.string.clear_list_in_todo_mode;
 
 		MenuItem clearListItem = menu.findItem(R.id.clear_list);
 		clearListItem.setTitle(clearListModeTitle);
 
 		Object view = flipper.getCurrentView();
 
-		if (view instanceof ListView)
-		{
+		if (view instanceof ListView) {
 			ListView lv = (ListView) view;
 
-			Boolean enableMenuItem = inEditMode() ? getSelectedItemsCount(lv) > 0
-					: lv.getCount() > 0;
+			Boolean enableMenuItem = inEditMode() ? getSelectedItemsCount(lv) > 0 : lv.getCount() > 0;
 			clearListItem.setEnabled(enableMenuItem);
-		}
-		else
-		{
+		} else {
 			clearListItem.setEnabled(false);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		switch (item.getItemId())
-		{
+		switch (item.getItemId()) {
 		case R.id.menu_toggle_mode:
 
 			if (inEditMode())
@@ -479,7 +457,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 			else
 				currentMode = "EDIT";
 
-			setUpActivity(currentCategoryId);
+			reload(currentCategoryId);
 
 			return true;
 
@@ -510,7 +488,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		case R.id.clear_list:
 			clearAllItemsFromTheList();
 			return true;
-			
+
 		case R.id.menu_entries_flipper_quick_report:
 			Intent myIntent = new Intent(getApplicationContext(), AllToDoItemsReport.class);
 			myIntent.putExtra("ActivityId", currentActivityId);
@@ -523,16 +501,14 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	protected void onPause()
-	{
+	protected void onPause() {
 		super.onPause();
 		saveState(currentActivityId, currentCategoryId, currentMode);
 	}
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onPostCreate(Bundle savedInstanceState)
-	{
+	public void onPostCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "onPostCreate called.");
 
 		super.onPostCreate(savedInstanceState);
@@ -541,17 +517,16 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		currentActivityId = getIntent().getLongExtra("activityId", 1);
 		currentCategoryId = getIntent().getLongExtra("categoryId", -1);
 		currentMode = getIntent().getStringExtra("mode");
-		
+
 		flipper.setInAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 		flipper.setOutAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
 		gestureListener = new ListViewGestureListener();
 
-		setUpActivity(currentCategoryId);
+		reload(currentCategoryId);
 	}
 
 	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState)
-	{
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		Log.i(TAG, "onRestoreInstanceState called.");
 
 		super.onRestoreInstanceState(savedInstanceState);
@@ -560,12 +535,11 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		currentActivityId = savedInstanceState.getLong("ActivityId");
 		currentCategoryId = savedInstanceState.getLong("CategoryId");
 		currentMode = savedInstanceState.getString("Mode");
-		setUpActivity(currentCategoryId);
+		reload(currentCategoryId);
 	}
 
 	@Override
-	protected void onResume()
-	{
+	protected void onResume() {
 		Log.i(TAG, "onResume called.");
 
 		super.onResume();
@@ -573,8 +547,7 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{
+	public void onSaveInstanceState(Bundle savedInstanceState) {
 		// Save UI state changes to the savedInstanceState.
 		// This bundle will be passed to onCreate if the process is
 		// killed and restarted.
@@ -584,17 +557,15 @@ public class EntriesFlipper extends Activity implements OnClickListener
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
-	private void restoreState()
-	{
+	private void restoreState() {
 		ApplicationStateBean currentState = dataAccessService.getCurrentApplicationState();
 		// load state only if there has been a saved state.
 		// default values mean that the state was never saved.
-		if (currentState.getActivityId() != 0 && currentState.getCategoryId() != 0)
-		{
+		if (currentState.getActivityId() != 0 && currentState.getCategoryId() != 0) {
 			currentActivityId = currentState.getActivityId();
 			currentCategoryId = currentState.getCategoryId();
 			currentMode = currentState.getMode();
-			setUpActivity(currentCategoryId);
+			reload(currentCategoryId);
 		}
 	}
 
@@ -608,30 +579,24 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	 * @param mode
 	 *            Current Mode
 	 */
-	private void saveState(long activityId, long categoryId, String mode)
-	{
+	private void saveState(long activityId, long categoryId, String mode) {
 		ContentValues values = new ContentValues();
 		values.put(AppStateColumns.ACTIVITY_ID, activityId);
 		values.put(AppStateColumns.CATEGORY_ID, categoryId);
 		values.put(AppStateColumns.MODE, mode);
 
-		try
-		{
+		try {
 			Log.i(TAG, "Saving application state to the database.");
 			getContentResolver().update(AppStateColumns.CONTENT_URI, values, null, null);
-		}
-		catch (NullPointerException e)
-		{
+		} catch (NullPointerException e) {
 			Log.e(TAG, "Exception when updating data " + e.getMessage());
 		}
 	}
 
-	private void setCurrentCategoryTitleAndInfo(boolean hideInfo)
-	{
+	private void setCurrentCategoryTitleAndInfo(boolean hideInfo) {
 		LinearLayout buttonsAndInfo = (LinearLayout) findViewById(R.id.InnerRelativeLayout);
 
-		if (flipper.getChildCount() > 0)
-		{
+		if (flipper.getChildCount() > 0) {
 			buttonsAndInfo.setVisibility(android.view.View.VISIBLE);
 
 			ListView lv = (ListView) flipper.getCurrentView();
@@ -642,33 +607,26 @@ public class EntriesFlipper extends Activity implements OnClickListener
 			int currentCategoryIndex = currentCategory.first;
 			int categoriesCount = categories.size();
 
-			String currentCategoryTitle = currentCategory.second.getName() + " ("
-					+ (currentCategoryIndex + 1) + " " + resources.getString(R.string.of) + " "
-					+ categoriesCount + ")";
+			String currentCategoryTitle = currentCategory.second.getName() + " (" + (currentCategoryIndex + 1) + " "
+					+ resources.getString(R.string.of) + " " + categoriesCount + ")";
 			setTitle(currentCategoryTitle);
 
 			int itemsSelected = getSelectedItemsCount(lv);
 			int allItemsCount = lv.getCount();
-			String currentCategoryInfo = itemsSelected + " "
-					+ resources.getString(R.string.selected) + System.getProperty("line.separator")
-					+ resources.getString(R.string.of) + " " + allItemsCount + " "
+			String currentCategoryInfo = itemsSelected + " " + resources.getString(R.string.selected)
+					+ System.getProperty("line.separator") + resources.getString(R.string.of) + " " + allItemsCount + " "
 					+ resources.getString(R.string.items);
 			txtCategoriesInfo.setText(currentCategoryInfo);
 
 			// Set category names to buttons
-			int previousCategoryIndex = currentCategoryIndex == 0 ? categoriesCount - 1
-					: currentCategoryIndex - 1;
-			int nextCategoryIndex = currentCategoryIndex == (categoriesCount - 1) ? 0
-					: currentCategoryIndex + 1;
+			int previousCategoryIndex = currentCategoryIndex == 0 ? categoriesCount - 1 : currentCategoryIndex - 1;
+			int nextCategoryIndex = currentCategoryIndex == (categoriesCount - 1) ? 0 : currentCategoryIndex + 1;
 
 			// hide both buttons if there is only one category left
-			if (categoriesCount > 1)
-			{
+			if (categoriesCount > 1) {
 				btnPreviousCategory.setVisibility(android.view.View.VISIBLE);
 				btnNextCategory.setVisibility(android.view.View.VISIBLE);
-			}
-			else
-			{
+			} else {
 				btnPreviousCategory.setVisibility(android.view.View.INVISIBLE);
 				btnNextCategory.setVisibility(android.view.View.INVISIBLE);
 			}
@@ -676,61 +634,49 @@ public class EntriesFlipper extends Activity implements OnClickListener
 			btnPreviousCategory.setText(categories.get(previousCategoryIndex).getName());
 			btnNextCategory.setText(categories.get(nextCategoryIndex).getName());
 			sortSpinner.setSelection(currentCategory.second.getSortOrder().toNumber());
-			
+
 			// hide the list sort drop down if no items in the list
 			if (allItemsCount == 0)
 				sortSpinner.setVisibility(View.GONE);
 			else
 				sortSpinner.setVisibility(View.VISIBLE);
 
-		}
-		else
-		{
+		} else {
 			buttonsAndInfo.setVisibility(android.view.View.INVISIBLE);
 
-			View emptyListView = getLayoutInflater().inflate(R.layout.empty_list_defaut_screen,
-					null);
+			View emptyListView = getLayoutInflater().inflate(R.layout.empty_list_defaut_screen, null);
 			flipper.addView(emptyListView);
 		}
 	}
-	
-	private boolean saveCurrentCategorySortSelection(CategoryBean category)
-	{
-		CategorySortOrder newSortOrder = CategorySortOrder.fromNumber(
-				sortSpinner.getSelectedItemPosition());
-		
-		ContentValues values = new ContentValues();
-		values.put(CategoryColumns.CATEGORY_SORT_ORDER, newSortOrder.toNumber());	
 
-		try
-		{
-			Log.i(TAG, "Saving category sort state to the database.");	
+	private boolean saveCurrentCategorySortSelection(CategoryBean category) {
+		CategorySortOrder newSortOrder = CategorySortOrder.fromNumber(sortSpinner.getSelectedItemPosition());
+
+		ContentValues values = new ContentValues();
+		values.put(CategoryColumns.CATEGORY_SORT_ORDER, newSortOrder.toNumber());
+
+		try {
+			Log.i(TAG, "Saving category sort state to the database.");
 			Uri entryUri = ContentUris.withAppendedId(CategoryColumns.CONTENT_URI, category.getId());
 			getContentResolver().update(entryUri, values, null, null);
 			category.setSortOrder(newSortOrder);
 			return true;
-		}
-		catch (NullPointerException e)
-		{
+		} catch (NullPointerException e) {
 			Log.e(this.getClass().toString(), "Exception when updating data " + e.getMessage());
 			return false;
 		}
-	}	
-	
-	private void setUpActivity(long categoryIdToSwitchTo)
-	{
+	}
+
+	private void setUpActivity(long categoryIdToSwitchTo, Cursor cursor) {
 		Log.i(TAG, "SetUpActivity called.");
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		try
-		{
+		try {
 			// start fresh with a clean flipper and a clean category list.
-			for (int i = 0; i < flipper.getChildCount(); i++)
-			{
+			for (int i = 0; i < flipper.getChildCount(); i++) {
 				// dispose of the old views, close cursors, clean up
-				if (flipper.getChildAt(i) instanceof EntriesFlipperTab)
-				{
+				if (flipper.getChildAt(i) instanceof EntriesFlipperTab) {
 					EntriesFlipperTab tab = (EntriesFlipperTab) flipper.getChildAt(i);
 					tab.unload();
 				}
@@ -739,33 +685,25 @@ public class EntriesFlipper extends Activity implements OnClickListener
 			flipper.removeAllViews();
 			categories.clear();
 
-			// query all categories for the given activity id and set up tabs
-			// for each category. Get a cursor to access the note
-			String selection = CategoryColumns.ACTIVITY_ID + " = " + currentActivityId;
-			if (inToDoMode())
-				selection += " AND " + EntryColumns.IS_SELECTED + "= 1";
-
-			Cursor mCursor = managedQuery(CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION,
-					selection, null, CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
+			if (cursor == null)
+				return;
 
 			int viewToDisplayIndex = 0;
 
-			if (mCursor.isAfterLast())
-			{
+			if (cursor.isAfterLast()) {
 				flipper.setDisplayedChild(viewToDisplayIndex);
 				setCurrentCategoryTitleAndInfo(false);
 				return;
 			}
 
-			mCursor.moveToFirst();
-			while (!mCursor.isAfterLast())
-			{
-				String categoryName = mCursor.getString(1);
-				long catId = mCursor.getLong(0);
-				int itemCount = mCursor.getInt(mCursor.getColumnIndex(CategoryColumns.ITEM_COUNT));
-				CategorySortOrder sortOrder = CategorySortOrder.fromNumber(mCursor.getInt(mCursor.getColumnIndex(CategoryColumns.CATEGORY_SORT_ORDER)));
-				if (itemCount > 0)
-				{
+			cursor.moveToFirst();
+			while (!cursor.isAfterLast()) {
+				String categoryName = cursor.getString(1);
+				long catId = cursor.getLong(0);
+				int itemCount = cursor.getInt(cursor.getColumnIndex(CategoryColumns.ITEM_COUNT));
+				CategorySortOrder sortOrder = CategorySortOrder.fromNumber(cursor.getInt(cursor
+						.getColumnIndex(CategoryColumns.CATEGORY_SORT_ORDER)));
+				if (itemCount > 0) {
 					CategoryBean currentCategory = new CategoryBean(catId, categoryName, sortOrder);
 					categories.add(currentCategory);
 					loadTab(currentCategory, itemCount);
@@ -773,53 +711,44 @@ public class EntriesFlipper extends Activity implements OnClickListener
 					// If we want to select a particular tab, as in case
 					// when a new item is added,
 					// we need to mark the tab to be selected later.
-					if (categoryIdToSwitchTo > 0 && currentCategory.getId() == categoryIdToSwitchTo)
-					{
+					if (categoryIdToSwitchTo > 0 && currentCategory.getId() == categoryIdToSwitchTo) {
 						viewToDisplayIndex = flipper.getChildCount() - 1;
 					}
 				}
 
-				mCursor.moveToNext();
+				cursor.moveToNext();
 			}
 
-			mCursor.close();
+			cursor.close();
 			flipper.setDisplayedChild(viewToDisplayIndex);
 			setCurrentCategoryTitleAndInfo(flipper.getChildCount() != 0);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			Log.e(TAG, "SetUpActivity: Exception when querying for data: " + e.getMessage());
 		}
 	}
 
-	private void loadTab(CategoryBean category, int itemCount)
-	{
+	private void loadTab(CategoryBean category, int itemCount) {
 		// Initialize a TabSpec for each tab and add it to the
 		// TabHost
 		String tabLabel = category.getName() + " (" + itemCount + ")";
 		Log.v(TAG, "Creating tab with tab label:" + tabLabel);
 
-		MetadataUpdater updater = new MetadataUpdater()
-		{
-			public void updateMetadata(Boolean completeRebindRequired)
-			{
+		MetadataUpdater updater = new MetadataUpdater() {
+			public void updateMetadata(Boolean completeRebindRequired) {
 				if (completeRebindRequired)
-					setUpActivity(-1);
+					reload(-1);
 				else
 					setCurrentCategoryTitleAndInfo(false);
 			}
 		};
 
-		DisplayedCategoryGetter categoryGetter = new DisplayedCategoryGetter()
-		{
-			public long getDisplayedCategoryId()
-			{
+		DisplayedCategoryGetter categoryGetter = new DisplayedCategoryGetter() {
+			public long getDisplayedCategoryId() {
 				return currentCategoryId;
 			}
 		};
 
-		EntriesFlipperTab tab = new EntriesFlipperTab(EntriesFlipper.this, category, inToDoMode(),
-				updater, categoryGetter);
+		EntriesFlipperTab tab = new EntriesFlipperTab(this, EntriesFlipper.this, category, inToDoMode(), updater, categoryGetter);
 		tab.load(gestureListener);
 		registerForContextMenu(tab);
 		flipper.addView(tab);
@@ -830,8 +759,10 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	 * 
 	 * @return True if to-do mode, false otherwise
 	 */
-	private Boolean inToDoMode()
-	{
+	private Boolean inToDoMode() {
+		if(currentMode == null)
+			return false;
+		
 		return currentMode.equalsIgnoreCase("TODO");
 	}
 
@@ -840,44 +771,33 @@ public class EntriesFlipper extends Activity implements OnClickListener
 	 * 
 	 * @return True if edit mode, false otherwise
 	 */
-	private Boolean inEditMode()
-	{
+	private Boolean inEditMode() {
 		return currentMode.equalsIgnoreCase("EDIT");
 	}
 
-	private class ListViewGestureListener extends SimpleOnGestureListener
-	{
+	private class ListViewGestureListener extends SimpleOnGestureListener {
 		private final int SWIPE_MAX_OFF_PATH = 300;
 		private final int SWIPE_MIN_DISTANCE = 150;
 		private final int SWIPE_THRESHOLD_VELOCITY = 100;
 		private final String TAG = this.getClass().getName();
 
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-		{
-			try
-			{
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			try {
 				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
 					return false;
 				// right to left swipe
-				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
-						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
-				{
+				if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					flipper.showNext();
 					setCurrentCategoryTitleAndInfo(true);
 					return true;
 
-				}
-				else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
-						&& Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
-				{
+				} else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					flipper.showPrevious();
 					setCurrentCategoryTitleAndInfo(true);
 					return true;
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				Log.e(TAG, "An exception occurred trying to flip to next tab.");
 			}
 			return false;

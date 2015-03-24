@@ -1,10 +1,15 @@
 package com.jakubkaleta.checklist;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Loader;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -24,6 +29,7 @@ import com.jakubkaleta.checklist.DataAccess.CategorySortOrder;
 import com.jakubkaleta.checklist.DataAccess.beans.CategoryBean;
 import com.jakubkaleta.checklist.DataAccess.beans.ConfigurationBean;
 import com.jakubkaleta.checklist.DataAccess.services.DataAccessService;
+import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
 
 /**
@@ -33,8 +39,9 @@ import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
  * @author Jakub Kaleta
  * 
  */
-public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
-{
+public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView implements LoaderManager.LoaderCallbacks<Cursor> {
+	
+	private Activity parent;
 	private CategoryBean category;
 	private final Boolean inToDoMode;
 	private final Context context;
@@ -43,12 +50,14 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 	private final ConfigurationBean currentConfiguration;
 	private final DataAccessService service;
 	private final DisplayedCategoryGetter categoryGetter;
-	private Cursor itemsCursor;	
+	private Cursor itemsCursor;
 	private final TabContentObserver contentObserver;
 	private SimpleCursorAdapter itemListAdapter;
-	
-	private static final String[] ENTRY_PROJECTION = new String[]
-	{ EntryColumns._ID, EntryColumns.ENTRY_NAME, EntryColumns.DATE_CREATED,
+
+	private static final int LOADER_ID = 10;
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
+
+	private static final String[] ENTRY_PROJECTION = new String[] { EntryColumns._ID, EntryColumns.ENTRY_NAME, EntryColumns.DATE_CREATED,
 			EntryColumns.IS_SELECTED };
 
 	/**
@@ -67,11 +76,11 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 	 * @param displayedCategoryGetter
 	 *            Getter providing the currently displayed category id
 	 */
-	public EntriesFlipperTab(Context context, CategoryBean category, Boolean inToDoMode,
-			MetadataUpdater updater, DisplayedCategoryGetter displayedCategoryGetter)
-	{	 		
-		super(context, null);		
-		
+	public EntriesFlipperTab(Activity parent, Context context, CategoryBean category, Boolean inToDoMode, MetadataUpdater updater,
+			DisplayedCategoryGetter displayedCategoryGetter) {
+		super(context, null);
+
+		this.parent = parent;
 		this.category = category;
 		this.inToDoMode = inToDoMode;
 		this.context = context;
@@ -80,18 +89,16 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 		service = new DataAccessService(context.getContentResolver());
 		currentConfiguration = service.getCurrentConfiguration();
 		this.contentObserver = new TabContentObserver(new Handler());
-		this.setDrawSelectorOnTop(true);	
-		
-		//setGrabberIcon(R.id.icon);
-		
+		this.setDrawSelectorOnTop(true);
+
+		// setGrabberIcon(R.id.icon);
+
 		this.setDropListener(onDrop);
 	}
-	
-	private TouchListView.DropListener onDrop = new TouchListView.DropListener()
-	{
+
+	private TouchListView.DropListener onDrop = new TouchListView.DropListener() {
 		@Override
-		public void drop(int from, int to)
-		{
+		public void drop(int from, int to) {
 			// get the id of category at position 'from'
 			long itemId = itemListAdapter.getItemId(from);
 			service.updateUserDefinedSortForEntry(category.getId(), itemId, from, to);
@@ -100,123 +107,98 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 
 	/**
 	 * Call to reload this tab with an updated category bean
-	 * @param gestureListener 
-	 * 			A gesture listener to use.
+	 * 
+	 * @param gestureListener
+	 *            A gesture listener to use.
 	 * @param category
-	 * 			Updated category bean to use to refresh this tab.
+	 *            Updated category bean to use to refresh this tab.
 	 */
-	public void reload(SimpleOnGestureListener gestureListener, CategoryBean category)
-	{
+	public void reload(SimpleOnGestureListener gestureListener, CategoryBean category) {
 		this.category = category;
 		unload();
 		load(gestureListener);
-	}	
-	
-	private int getItemLayout()
-	{
-		if(inToDoMode)		
+	}
+
+	private int getItemLayout() {
+		if (inToDoMode)
 			return R.layout.entry_list_item_todo_mode;
-		
-		if(category.getSortOrder() == CategorySortOrder.Custom)		
+
+		if (category.getSortOrder() == CategorySortOrder.Custom)
 			return R.layout.single_checkable_list_item_with_dragger;
-		
+
 		return R.layout.single_checkable_list_item;
 	}
-	
-	private int getTextItemLayout()
-	{
-		if(inToDoMode)		
+
+	private int getTextItemLayout() {
+		if (inToDoMode)
 			return R.id.single_item_name;
-			
+
 		return R.id.single_checkable_item;
 	}
-	
+
 	/**
 	 * Call to load data into the tab.
-	 * @param gestureListener A gesture listener to use.
+	 * 
+	 * @param gestureListener
+	 *            A gesture listener to use.
 	 */
-	public void load(SimpleOnGestureListener gestureListener)
-	{
+	public void load(SimpleOnGestureListener gestureListener) {
 		setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		setTag(category.getId());
 
 		// Used to map notes entries from the database to views
-		try
-		{
-			String condition = EntryColumns.CATEGORY_ID + " = " + category.getId();
-			if (inToDoMode)
-				condition += " AND " + EntryColumns.IS_SELECTED + " = 1 ";
-			
-			String sortOrder = category.getSortOrder().toSortString();
-			
-			itemsCursor = context.getContentResolver().query(EntryColumns.CONTENT_URI,
-					ENTRY_PROJECTION, condition, null, sortOrder);			
-			
-			itemsCursor.registerContentObserver(contentObserver);
-			
-			itemListAdapter = new SimpleCursorAdapter(context, getItemLayout(), itemsCursor,
-					new String[]
-					{ EntryColumns.ENTRY_NAME, EntryColumns.IS_SELECTED, EntryColumns._ID },
-					new int[]
-					{ getTextItemLayout() });
-			
-			itemListAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder()
-			{
+		try {
+			itemListAdapter = new SimpleCursorAdapter(context, getItemLayout(), itemsCursor, new String[] { EntryColumns.ENTRY_NAME,
+					EntryColumns.IS_SELECTED, EntryColumns._ID }, new int[] { getTextItemLayout() }, 0);
+
+			itemListAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 				@Override
-				public boolean setViewValue(View view, Cursor cursor, int column)
-				{
+				public boolean setViewValue(View view, Cursor cursor, int column) {
 					String entryName = cursor.getString(cursor.getColumnIndex(EntryColumns.ENTRY_NAME));
 					boolean selected = cursor.getInt(cursor.getColumnIndex(EntryColumns.IS_SELECTED)) > 0;
-					
-					if(column == 1)
-					{
-						if(view.getClass().equals(CheckedTextView.class))
-						{
-							((CheckedTextView)view).setChecked(selected);
-							((CheckedTextView)view).setText(entryName);
+
+					if (column == 1) {
+						if (view.getClass().equals(CheckedTextView.class)) {
+							((CheckedTextView) view).setChecked(selected);
+							((CheckedTextView) view).setText(entryName);
+						} else if (view.getClass().equals(TextView.class)) {
+							((TextView) view).setText(entryName);
 						}
-						else if(view.getClass().equals(TextView.class))
-						{				
-							((TextView)view).setText(entryName);
-						}
-						
+
 						return true;
 					}
-					
+
 					return true;
 				}
 			});
 
 			setAdapter(itemListAdapter);
-		}
-		catch (Exception e)
-		{
+			
+			mCallbacks = this;
+			LoaderManager lm = parent.getLoaderManager();
+			lm.initLoader(LOADER_ID, null, mCallbacks);
+			
+		} catch (Exception e) {
 			Log.e(TAG, "Exception when querying for data " + e.getMessage());
 		}
 
-		setOnItemClickListener(new OnItemClickListener()
-		{
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (inToDoMode)
-				{
+		setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (inToDoMode) {
 					setEntrySelected(id, false);
-				}
-				else
-				{
-					boolean selected = ((CheckedTextView)(view.findViewById(R.id.single_checkable_item))).isChecked();
+				} else {
+					boolean selected = ((CheckedTextView) (view.findViewById(R.id.single_checkable_item))).isChecked();
 					setEntrySelected(id, !selected);
 				}
 			}
 		});
 
-		final GestureDetector gestureDetector = new GestureDetector(gestureListener);
-		OnTouchListener touchListener = new View.OnTouchListener()
-		{
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				if (gestureDetector.onTouchEvent(event))
-				{
+		final GestureDetector gestureDetector = new GestureDetector(context, gestureListener);
+		
+		OnTouchListener touchListener = new View.OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				if (gestureDetector.onTouchEvent(event)) {
+					v.performClick();
 					return true;
 				}
 				return false;
@@ -226,35 +208,48 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 		setOnTouchListener(touchListener);
 	}
 
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		String condition = EntryColumns.CATEGORY_ID + " = " + category.getId();
+		if (inToDoMode)
+			condition += " AND " + EntryColumns.IS_SELECTED + " = 1 ";
+
+		String sortOrder = category.getSortOrder().toSortString();
+
+		return new CursorLoader(context, EntryColumns.CONTENT_URI, ENTRY_PROJECTION, condition, null, sortOrder);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		itemListAdapter.swapCursor(cursor);
+		cursor.registerContentObserver(contentObserver);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		itemListAdapter.swapCursor(null);
+	}
+
 	/**
 	 * Call to unload and deactivate the tab.
 	 */
-	public void unload()
-	{
+	public void unload() {
 		Log.v(TAG, "Unload called. CategoryName: " + category.getName());
 
-		if (itemsCursor != null && !itemsCursor.isClosed())
-		{
+		if (itemsCursor != null && !itemsCursor.isClosed()) {
 			Log.v(TAG, "Closing cursor and unregistering observer.");
 			itemsCursor.unregisterContentObserver(contentObserver);
-			itemsCursor.deactivate();
 			itemsCursor.close();
-			
 		}
 	}
 
-	private final void setEntrySelected(final long id, final boolean selected)
-	{
-		Boolean askForConfirmation = inToDoMode
-				&& !currentConfiguration.getDisablePromptInToDoMode();
+	private final void setEntrySelected(final long id, final boolean selected) {
+		Boolean askForConfirmation = inToDoMode && !currentConfiguration.getDisablePromptInToDoMode();
 
-		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-		{
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				switch (which)
-				{
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 
 					// in case there is only one element in the list
@@ -273,45 +268,38 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView
 			}
 		};
 
-		if (askForConfirmation)
-		{
+		if (askForConfirmation) {
 			final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 			dialogBuilder.setTitle(R.string.mark_item_done).setMessage(R.string.continue_prompt)
-					.setPositiveButton(R.string.yes_string, dialogClickListener).setNegativeButton(
-							R.string.no_string, dialogClickListener).show();
-		}
-		else
-		{
+					.setPositiveButton(R.string.yes_string, dialogClickListener).setNegativeButton(R.string.no_string, dialogClickListener)
+					.show();
+		} else {
 			// in case there is only one element in the list
 			// after a successful update the list must be removed from the
 			// flipper.
-			boolean listMustBeRemoved =inToDoMode && (getCount() == 1);
+			boolean listMustBeRemoved = inToDoMode && (getCount() == 1);
 			service.persistSelectionChangeToTheDatabase(id, selected);
 			updater.updateMetadata(listMustBeRemoved);
 		}
 	}
 
-	private class TabContentObserver extends ContentObserver
-	{
-		public TabContentObserver(Handler handler)
-		{
+	private class TabContentObserver extends ContentObserver {
+		public TabContentObserver(Handler handler) {
 			super(handler);
 		}
 
 		@Override
-		public void onChange(boolean selfChange)
-		{
-			if (category.getId() == categoryGetter.getDisplayedCategoryId())
-			{
-				Log.v(TAG, "onChange called on the main cursor. SelfChange: "
-						+ (selfChange ? "True" : "False") + " Category: " + category.getId());				
+		public void onChange(boolean selfChange) {
+			if (category.getId() == categoryGetter.getDisplayedCategoryId()) {
+				Log.v(TAG,
+						"onChange called on the main cursor. SelfChange: " + (selfChange ? "True" : "False") + " Category: "
+								+ category.getId());
 			}
-			
+
 		}
 
 		@Override
-		public boolean deliverSelfNotifications()
-		{
+		public boolean deliverSelfNotifications() {
 			return false;
 		}
 	}
