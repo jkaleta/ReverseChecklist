@@ -2,9 +2,12 @@ package com.jakubkaleta.checklist;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,11 +32,15 @@ import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
  * 
  * @author Jakub Kaleta
  */
-public class AllToDoItemsReport extends ListActivity
+public class AllToDoItemsReport extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> 
 {
 	private DataAccessService dataAccessService;
 	private long activity_id;
 	private String TAG = this.getClass().toString();
+	SimpleCursorAdapter dataAdapter;
+	
+	private static final int LOADER_ID = 6;
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
 
 	final String[] PROJECTION = new String[]
 	{ EntryColumns.ENTRY_NAME, ActivityColumns.ACTIVITY_NAME, CategoryColumns.CATEGORY_NAME,
@@ -60,52 +67,51 @@ public class AllToDoItemsReport extends ListActivity
 				setEntrySelected(id, false);
 			}
 		});
+		
+		int layout = singleActivityReport() ? R.layout.activity_todo_report_list_item
+				: R.layout.all_todo_report_list_item;
+
+		dataAdapter = new SimpleCursorAdapter(this, layout, null,
+				PROJECTION, new int[]
+				{ R.id.item_name, R.id.activity_name, R.id.category_name }, 0);
+		
+		setListAdapter(dataAdapter);
 
 		// register all items in the menu for context menu
 		registerForContextMenu(lv);
+		
+		mCallbacks = this;
+		LoaderManager lm = getLoaderManager();
+		lm.initLoader(LOADER_ID, null, mCallbacks);
+	}
+	
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		
+		String sortOrder = dataAccessService.getCurrentApplicationState()
+				.getActivityListSortOrder().toSortString()
+				+ ", " + CategoryColumns.CATEGORY_NAME;
+
+		// Get a cursor to access all items
+		String whereClause = EntryColumns.IS_SELECTED + "= 1";
+
+		if (singleActivityReport())
+			whereClause += " AND " + CategoryColumns.TABLE_NAME + "."
+					+ CategoryColumns.ACTIVITY_ID + " = " + activity_id;
+		
+		return new CursorLoader(AllToDoItemsReport.this, EntryColumns.CONTENT_URI, PROJECTION, whereClause, null,	sortOrder);
 	}
 
 	@Override
-	public void onPostCreate(Bundle savedInstanceState)
-	{
-		super.onPostCreate(savedInstanceState);
-		bindTheList();
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		dataAdapter.swapCursor(cursor);
 	}
 
-	private void bindTheList()
-	{
-		try
-		{
-			String sortOrder = dataAccessService.getCurrentApplicationState()
-					.getActivityListSortOrder().toSortString()
-					+ ", " + CategoryColumns.CATEGORY_NAME;
-
-			// Get a cursor to access all items
-			String whereClause = EntryColumns.IS_SELECTED + "= 1";
-
-			if (singleActivityReport())
-				whereClause += " AND " + CategoryColumns.TABLE_NAME + "."
-						+ CategoryColumns.ACTIVITY_ID + " = " + activity_id;
-
-			Cursor mCursor = managedQuery(EntryColumns.CONTENT_URI, PROJECTION, whereClause, null,
-					sortOrder);
-
-			
-			int layout = singleActivityReport() ? R.layout.activity_todo_report_list_item
-					: R.layout.all_todo_report_list_item;
-
-			SimpleCursorAdapter dataAdapter = new SimpleCursorAdapter(this, layout, mCursor,
-					PROJECTION, new int[]
-					{ R.id.item_name, R.id.activity_name, R.id.category_name });
-
-			setListAdapter(dataAdapter);
-		}
-		catch (Exception e)
-		{
-			Log.e(this.getClass().toString(), "Exception when querying for data " + e.getMessage());
-		}
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		dataAdapter.swapCursor(null);
 	}
-
+	
 	private final void setEntrySelected(final long id, final boolean selected)
 	{
 		Boolean askForConfirmation = !dataAccessService.getCurrentConfiguration()
