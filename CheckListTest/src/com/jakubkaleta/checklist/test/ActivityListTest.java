@@ -8,7 +8,7 @@ import com.jakubkaleta.checklist.AddEditActivity;
 import com.jakubkaleta.checklist.AllToDoItemsReport;
 import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.test.DataProviderTestHelper;
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 import android.app.Instrumentation;
 import android.content.ContentResolver;

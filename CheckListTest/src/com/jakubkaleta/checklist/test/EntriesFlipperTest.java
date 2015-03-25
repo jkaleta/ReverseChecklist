@@ -18,7 +18,7 @@ import com.jakubkaleta.checklist.EntriesFlipper;
 import com.jakubkaleta.checklist.R;
 import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.test.DataProviderTestHelper;
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 /**
  * Contains UI tests for the EntriesFlipper activity and related activities that
@@ -98,7 +98,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertFalse(solo.getButton(0).isEnabled());
-		assertFalse(solo.getCurrentSpinners().get(0).isEnabled());
+		assertFalse(solo.getCurrentViews().get(0).isEnabled());
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertFalse(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentSpinners().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews().get(0).isEnabled());
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertTrue(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentSpinners().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews().get(0).isEnabled());
 
 		// add item
 		solo.clickOnButton(0);
@@ -222,7 +222,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertTrue(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentSpinners().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews().get(0).isEnabled());
 
 		// add item
 		solo.clickOnButton(0);
@@ -261,7 +261,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertTrue(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentSpinners().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews().get(0).isEnabled());
 	}
 
 	/**
