@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakubkaleta.checklist.AddEditEntry;
@@ -98,7 +99,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertFalse(solo.getButton(0).isEnabled());
-		assertFalse(solo.getCurrentViews().get(0).isEnabled());
+		assertFalse(solo.getCurrentViews(Spinner.class).get(0).isEnabled());
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertFalse(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentViews().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews(Spinner.class).get(0).isEnabled());
 	}
 
 	/**
@@ -156,7 +157,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertTrue(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentViews().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews(Spinner.class).get(0).isEnabled());
 
 		// add item
 		solo.clickOnButton(0);
@@ -261,7 +262,7 @@ public class EntriesFlipperTest extends ActivityInstrumentationTestCase2<Entries
 		// verify that UI components are enabled/disabled as they should
 		assertTrue(solo.getText(0).isEnabled());
 		assertTrue(solo.getButton(0).isEnabled());
-		assertTrue(solo.getCurrentViews().get(0).isEnabled());
+		assertTrue(solo.getCurrentViews(Spinner.class).get(0).isEnabled());
 	}
 
 	/**

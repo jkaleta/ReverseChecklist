@@ -213,14 +213,10 @@ public class CsvExportImportService {
 			return ImportResult.ImportFailedOtherError;
 		} finally {
 			try {
-				reader.close();
-				csvreader.close();
-			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
-			}
-			try {
-				reader.close();
-				csvreader.close();
+				if(reader!= null)
+					reader.close();
+				if(csvreader != null)
+					csvreader.close();
 			} catch (IOException e) {
 				Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
 			}

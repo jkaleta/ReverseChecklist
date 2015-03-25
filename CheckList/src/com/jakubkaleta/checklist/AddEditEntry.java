@@ -47,6 +47,7 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 	private Button addEditEntry;
 	private Spinner spinnerCategories;
 	private TextView addMultipleItemsHint;
+	private SimpleCursorAdapter categoriesAdapter;
 	private long entry_id;
 	private long category_id;
 	private String mode;
@@ -79,6 +80,12 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 		mode = getIntent().getStringExtra("mode");
 
 		resources = getResources();
+		
+		categoriesAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, null, new String[] {
+				CategoryColumns.CATEGORY_NAME, CategoryColumns._ID }, new int[] { android.R.id.text1 }, 0);
+		spinnerCategories.setAdapter(categoriesAdapter);
+		
+		categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		mCallbacks = this;
 		LoaderManager lm = getLoaderManager();
@@ -122,12 +129,13 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 
 		switch (id) {
 		case CATEGORIES_LOADER_ID:
+			return new CursorLoader(AddEditEntry.this, CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION, CategoryColumns.ACTIVITY_ID
+					+ " = " + activity_id, null, CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
+
+		case ENTRY_LOADER_ID:
 			return new CursorLoader(AddEditEntry.this, EntryColumns.CONTENT_URI, ENTRY_PROJECTION, EntryColumns.TABLE_NAME + "."
 					+ EntryColumns._ID + " = " + entry_id, null, EntryColumns.DEFAULT_SORT_ORDER);
 
-		case ENTRY_LOADER_ID:
-			return new CursorLoader(AddEditEntry.this, CategoryColumns.CONTENT_URI, CATEGORY_PROJECTION, CategoryColumns.ACTIVITY_ID
-					+ " = " + activity_id, null, CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
 		}
 		return null;
 	}
@@ -140,9 +148,11 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 			bindCategoryDropdown(cursor);
 
 		case ENTRY_LOADER_ID:
-			cursor.moveToFirst();
-			entryName.setText(cursor.getString(cursor.getColumnIndex(EntryColumns.ENTRY_NAME)));
-			category_id = cursor.getLong(cursor.getColumnIndex(EntryColumns.CATEGORY_ID));
+			if (mode.equalsIgnoreCase("EDIT")) {
+				cursor.moveToFirst();
+				entryName.setText(cursor.getString(cursor.getColumnIndex(EntryColumns.ENTRY_NAME)));
+				category_id = cursor.getLong(cursor.getColumnIndex(EntryColumns.CATEGORY_ID));	
+			}
 		}
 	}
 
@@ -160,12 +170,6 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 
 	@Override
 	public void onPostCreate(Bundle savedInstanceState) {
-		
-		Boolean categoriesExist = !spinnerCategories.getAdapter().isEmpty();
-
-		String text = entryName.getText().toString().replace(";", "");
-		addEditEntry.setEnabled(categoriesExist && text.length() > 0);
-
 		// I'm adding listeners in onPostCreate. If they were added in onCreate,
 		// it would be possible for them to be executed as a result of
 		// onRestoreInstanceState. The handlers depend on the code in
@@ -216,31 +220,29 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 	}
 
 	private void bindCategoryDropdown(Cursor cursor) {
-
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, null, new String[] {
-				CategoryColumns.CATEGORY_NAME, CategoryColumns._ID }, new int[] { android.R.id.text1 }, 0);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerCategories.setAdapter(adapter);
-		OnItemSelectedListener spinnerListener = new myOnItemSelectedListener(this, adapter);
+		categoriesAdapter.swapCursor(cursor);
+		
+		Boolean categoriesExist = categoriesAdapter.isEmpty();
+		String text = entryName.getText().toString().replace(";", "");
+		addEditEntry.setEnabled(categoriesExist && text.length() > 0);
+		
+		OnItemSelectedListener spinnerListener = new myOnItemSelectedListener(this, categoriesAdapter);
 		spinnerCategories.setOnItemSelectedListener(spinnerListener);
 
 		// if there were no categories for the selected activity, the category spinner
 		// must be disabled. We don't want users adding entries with no category selected.
 		// We want to make them enter a category instead.
-		spinnerCategories.setEnabled(!adapter.isEmpty());
-		addEditEntry.setEnabled(!adapter.isEmpty() && entryName.getText().length() > 0);
+		spinnerCategories.setEnabled(!categoriesAdapter.isEmpty());
+		addEditEntry.setEnabled(!categoriesAdapter.isEmpty() && entryName.getText().length() > 0);
 
-		if (!adapter.isEmpty() && category_id > 0) {
-			for (int i = 0; i < adapter.getCount(); i++) {
-				if (adapter.getItemId(i) == category_id) {
+		if (!categoriesAdapter.isEmpty() && category_id > 0) {
+			for (int i = 0; i < categoriesAdapter.getCount(); i++) {
+				if (categoriesAdapter.getItemId(i) == category_id) {
 					spinnerCategories.setSelection(i);
 					break;
 				}
 			}
 		}
-		
-		adapter.swapCursor(cursor);
 	}
 
 	@Override
