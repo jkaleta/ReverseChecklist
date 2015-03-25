@@ -29,7 +29,6 @@ import com.jakubkaleta.checklist.DataAccess.CategorySortOrder;
 import com.jakubkaleta.checklist.DataAccess.beans.CategoryBean;
 import com.jakubkaleta.checklist.DataAccess.beans.ConfigurationBean;
 import com.jakubkaleta.checklist.DataAccess.services.DataAccessService;
-import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
 
 /**
@@ -50,8 +49,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 	private final ConfigurationBean currentConfiguration;
 	private final DataAccessService service;
 	private final DisplayedCategoryGetter categoryGetter;
-	private Cursor itemsCursor;
-	private final TabContentObserver contentObserver;
+	//private final TabContentObserver contentObserver;
 	private SimpleCursorAdapter itemListAdapter;
 
 	private static final int LOADER_ID = 10;
@@ -88,7 +86,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 		this.categoryGetter = displayedCategoryGetter;
 		service = new DataAccessService(context.getContentResolver());
 		currentConfiguration = service.getCurrentConfiguration();
-		this.contentObserver = new TabContentObserver(new Handler());
+		//this.contentObserver = new TabContentObserver(new Handler());
 		this.setDrawSelectorOnTop(true);
 
 		// setGrabberIcon(R.id.icon);
@@ -148,7 +146,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 
 		// Used to map notes entries from the database to views
 		try {
-			itemListAdapter = new SimpleCursorAdapter(context, getItemLayout(), itemsCursor, new String[] { EntryColumns.ENTRY_NAME,
+			itemListAdapter = new SimpleCursorAdapter(context, getItemLayout(), null, new String[] { EntryColumns.ENTRY_NAME,
 					EntryColumns.IS_SELECTED, EntryColumns._ID }, new int[] { getTextItemLayout() }, 0);
 
 			itemListAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
@@ -176,7 +174,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 			
 			mCallbacks = this;
 			LoaderManager lm = parent.getLoaderManager();
-			lm.initLoader(LOADER_ID, null, mCallbacks);
+			lm.initLoader(LOADER_ID + (int)category.getId(), null, mCallbacks);
 			
 		} catch (Exception e) {
 			Log.e(TAG, "Exception when querying for data " + e.getMessage());
@@ -222,7 +220,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		itemListAdapter.swapCursor(cursor);
-		cursor.registerContentObserver(contentObserver);
+		//cursor.registerContentObserver(contentObserver);
 	}
 
 	@Override
@@ -235,12 +233,6 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 	 */
 	public void unload() {
 		Log.v(TAG, "Unload called. CategoryName: " + category.getName());
-
-		if (itemsCursor != null && !itemsCursor.isClosed()) {
-			Log.v(TAG, "Closing cursor and unregistering observer.");
-			itemsCursor.unregisterContentObserver(contentObserver);
-			itemsCursor.close();
-		}
 	}
 
 	private final void setEntrySelected(final long id, final boolean selected) {
@@ -283,25 +275,25 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 		}
 	}
 
-	private class TabContentObserver extends ContentObserver {
-		public TabContentObserver(Handler handler) {
-			super(handler);
-		}
-
-		@Override
-		public void onChange(boolean selfChange) {
-			if (category.getId() == categoryGetter.getDisplayedCategoryId()) {
-				Log.v(TAG,
-						"onChange called on the main cursor. SelfChange: " + (selfChange ? "True" : "False") + " Category: "
-								+ category.getId());
-			}
-
-		}
-
-		@Override
-		public boolean deliverSelfNotifications() {
-			return false;
-		}
-	}
+//	private class TabContentObserver extends ContentObserver {
+//		public TabContentObserver(Handler handler) {
+//			super(handler);
+//		}
+//
+//		@Override
+//		public void onChange(boolean selfChange) {
+//			if (category.getId() == categoryGetter.getDisplayedCategoryId()) {
+//				Log.v(TAG,
+//						"onChange called on the main cursor. SelfChange: " + (selfChange ? "True" : "False") + " Category: "
+//								+ category.getId());
+//			}
+//
+//		}
+//
+//		@Override
+//		public boolean deliverSelfNotifications() {
+//			return false;
+//		}
+//	}
 
 }

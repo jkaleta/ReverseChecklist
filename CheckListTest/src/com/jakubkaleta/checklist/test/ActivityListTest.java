@@ -24,7 +24,6 @@ import android.widget.ListView;
  */
 public class ActivityListTest extends ActivityInstrumentationTestCase2<ActivityList>
 {
-	private static final String TARGET_PACKAGE_ID = "com.jakubkaleta.checklist";
 	private ActivityList activityList;
 	private ListView listView;
 	private ContentResolver contentResolver;
@@ -42,7 +41,7 @@ public class ActivityListTest extends ActivityInstrumentationTestCase2<ActivityL
 	 */
 	public ActivityListTest() throws ClassNotFoundException
 	{
-		super(TARGET_PACKAGE_ID, ActivityList.class);
+		super(ActivityList.class);
 	}
 
 	@Override
@@ -227,7 +226,7 @@ public class ActivityListTest extends ActivityInstrumentationTestCase2<ActivityL
 		solo.assertCurrentActivity("Program should be open on ActivityList", ActivityList.class);
 		assertNotNull(listView);
 		assertEquals(2, listView.getCount());
-		assertTrue(solo.searchText(testListName));
+		assertTrue(solo.waitForText(testListName));
 
 		// third menu item should delete the list
 		solo.clickLongOnText(testListName);
@@ -312,6 +311,7 @@ public class ActivityListTest extends ActivityInstrumentationTestCase2<ActivityL
 	public void testMenu_quickReport()
 	{		
 		// first, there must be items selected in the list
+		instrumentation.waitForIdleSync();
 		solo.clickOnText("Shopping");
 		instrumentation.waitForIdleSync();
 		solo.clickOnText("Milk");
@@ -334,7 +334,7 @@ public class ActivityListTest extends ActivityInstrumentationTestCase2<ActivityL
 	public void testMenu_about()
 	{	
 		solo.clickOnMenuItem("About");
-		assertTrue(solo.searchText("If you have any questions, suggestions"));
+		assertTrue(solo.searchText("If you have any questions, suggestions", true));
 		solo.clickOnButton(0);
 	}
 

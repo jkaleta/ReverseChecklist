@@ -2,6 +2,7 @@ package com.jakubkaleta.checklist;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -139,7 +140,7 @@ public class DatabaseExchange extends Activity
 			CsvExportImportService service = new CsvExportImportService(
 					DatabaseExchange.this.getContentResolver());
 			Date dateNow = new Date();
-			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.US);
 			String fileName = "export_" + dateformat.format(dateNow) + ".csv";
 			return service.getAllItemsFromAllListsAsCsvData(fileName);
 		}

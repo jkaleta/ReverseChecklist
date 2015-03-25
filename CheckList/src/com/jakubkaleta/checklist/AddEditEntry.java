@@ -79,6 +79,8 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 		mode = getIntent().getStringExtra("mode");
 
 		resources = getResources();
+		
+		mCallbacks = this;
 		LoaderManager lm = getLoaderManager();
 		lm.initLoader(CATEGORIES_LOADER_ID, null, mCallbacks);
 
@@ -88,8 +90,6 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 			setTitle(resources.getString(R.string.edit_item));
 
 			entry_id = getIntent().getLongExtra("EntryId", 0);
-
-			mCallbacks = this;
 			lm.initLoader(ENTRY_LOADER_ID, null, mCallbacks);
 			// see the rest in loader callbacks
 		} else {

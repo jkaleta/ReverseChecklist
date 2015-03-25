@@ -1,6 +1,6 @@
 package com.jakubkaleta.checklist.test;
 
-import com.jakubkaleta.checklist.Utilities;
+import com.jakubkaleta.checklist.util.Utilities;
 
 import junit.framework.TestCase;
 

@@ -27,7 +27,6 @@ import android.widget.SimpleCursorAdapter;
 import com.commonsware.cwac.tlv.TouchListView;
 import com.jakubkaleta.checklist.DataAccess.services.DataAccessService;
 import com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns;
-import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
 
 /**
  * Displays all categories for a single activity

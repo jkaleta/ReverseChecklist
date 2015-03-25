@@ -3,7 +3,6 @@ package com.jakubkaleta.checklist;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jakubkaleta.checklist.DataAccess.tables.ActivityColumns;
 import com.jakubkaleta.checklist.DataAccess.tables.CategoryColumns;
 
 import android.app.Activity;
@@ -14,10 +13,8 @@ import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;

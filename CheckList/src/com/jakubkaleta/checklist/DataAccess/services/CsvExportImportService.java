@@ -26,14 +26,12 @@ import au.com.bytecode.opencsv.CSVWriter;
  * 
  * @author Jakub Kaleta
  */
-public class CsvExportImportService
-{
+public class CsvExportImportService {
 	private ContentResolver contentResolver;
 	private ImportEntryProcessor entryProcessor;
 	private DataAccessService dataAccessService;
 
-	final String[] ALL_ITEMS_PROJECTION = new String[]
-	{ EntryColumns._ID, EntryColumns.ENTRY_NAME, ActivityColumns.ACTIVITY_NAME,
+	final String[] ALL_ITEMS_PROJECTION = new String[] { EntryColumns._ID, EntryColumns.ENTRY_NAME, ActivityColumns.ACTIVITY_NAME,
 			CategoryColumns.CATEGORY_NAME, EntryColumns.IS_SELECTED };
 
 	/**
@@ -42,8 +40,7 @@ public class CsvExportImportService
 	 * @param resolver
 	 *            ContentResolver that this class uses to query for data
 	 */
-	public CsvExportImportService(ContentResolver resolver)
-	{
+	public CsvExportImportService(ContentResolver resolver) {
 		contentResolver = resolver;
 		entryProcessor = new ImportEntryProcessor(resolver);
 		dataAccessService = new DataAccessService(resolver);
@@ -59,16 +56,13 @@ public class CsvExportImportService
 	 * 
 	 * @return True if writing to file succeeded. False if it failed
 	 */
-	public Boolean getAllItemsFromAllListsAsCsvData(String fileName)
-	{
+	public Boolean getAllItemsFromAllListsAsCsvData(String fileName) {
 		FileWriter fWriter = null;
 		CSVWriter writer = null;
-		try
-		{
+		try {
 			File path = Environment.getExternalStorageDirectory();
 
-			if (path.exists())
-			{
+			if (path.exists()) {
 				Log.d(getClass().getSimpleName(), "Path exists: " + path.toString());
 
 				// create folder structure for the export data:
@@ -80,11 +74,9 @@ public class CsvExportImportService
 				// now create a new file for writing
 				File databaseExportFile;
 				databaseExportFile = new File(folder, fileName);
-				if (!databaseExportFile.exists())
-				{
-					Log.d(getClass().getSimpleName(),
-							"Creating a new database export file, because it was not found: "
-									+ databaseExportFile.toString());
+				if (!databaseExportFile.exists()) {
+					Log.d(getClass().getSimpleName(), "Creating a new database export file, because it was not found: "
+							+ databaseExportFile.toString());
 					databaseExportFile.createNewFile();
 				}
 
@@ -93,30 +85,21 @@ public class CsvExportImportService
 				writer = new CSVWriter(fWriter, ',');
 
 				// get all items from the entries table,
-				String sortOrder = ActivityColumns.ACTIVITY_NAME + ", "
-						+ CategoryColumns.CATEGORY_NAME + "," + EntryColumns.ENTRY_NAME;
+				String sortOrder = ActivityColumns.ACTIVITY_NAME + ", " + CategoryColumns.CATEGORY_NAME + "," + EntryColumns.ENTRY_NAME;
 
-				Cursor mCursor = contentResolver.query(EntryColumns.CONTENT_URI,
-						ALL_ITEMS_PROJECTION, null, null, sortOrder);
+				Cursor mCursor = contentResolver.query(EntryColumns.CONTENT_URI, ALL_ITEMS_PROJECTION, null, null, sortOrder);
 
 				String[] items = new String[mCursor.getCount()];
 
-				if (!mCursor.isAfterLast())
-				{
+				if (!mCursor.isAfterLast()) {
 					mCursor.moveToFirst();
-					while (!mCursor.isAfterLast())
-					{
-						String activityName = mCursor.getString(mCursor
-								.getColumnIndex(ActivityColumns.ACTIVITY_NAME));
-						String categoryName = mCursor.getString(mCursor
-								.getColumnIndex(CategoryColumns.CATEGORY_NAME));
-						String entryName = mCursor.getString(mCursor
-								.getColumnIndex(EntryColumns.ENTRY_NAME));
-						String isSelected = mCursor.getInt(mCursor
-								.getColumnIndex(EntryColumns.IS_SELECTED)) > 0 ? "true" : "false";
+					while (!mCursor.isAfterLast()) {
+						String activityName = mCursor.getString(mCursor.getColumnIndex(ActivityColumns.ACTIVITY_NAME));
+						String categoryName = mCursor.getString(mCursor.getColumnIndex(CategoryColumns.CATEGORY_NAME));
+						String entryName = mCursor.getString(mCursor.getColumnIndex(EntryColumns.ENTRY_NAME));
+						String isSelected = mCursor.getInt(mCursor.getColumnIndex(EntryColumns.IS_SELECTED)) > 0 ? "true" : "false";
 
-						items[mCursor.getPosition()] = activityName + ";" + categoryName + ";"
-								+ entryName + ";" + isSelected;
+						items[mCursor.getPosition()] = activityName + ";" + categoryName + ";" + entryName + ";" + isSelected;
 
 						mCursor.moveToNext();
 					}
@@ -125,48 +108,31 @@ public class CsvExportImportService
 				mCursor.close();
 
 				// feed in your array (or convert your data to an array)
-				for (int i = 0; i < items.length; i++)
-				{
+				for (int i = 0; i < items.length; i++) {
 					String[] entries = items[i].split(";");
 					writer.writeNext(entries);
 				}
-			}
-			else
-			{
+			} else {
 				Log.d(getClass().getSimpleName(), "Path does not exist: " + path.toString());
 				return false;
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			Log.e(getClass().getSimpleName(), "Writing to CSV file failed with: " + e.toString());
 			return false;
-		}
-		finally
-		{
-			if (fWriter != null)
-			{
-				try
-				{
+		} finally {
+			if (fWriter != null) {
+				try {
 					fWriter.close();
-				}
-				catch (IOException e)
-				{
-					Log.e(getClass().getSimpleName(), "Closing file stream failed with: "
-							+ e.toString());
+				} catch (IOException e) {
+					Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
 				}
 			}
 
-			if (writer != null)
-			{
-				try
-				{
+			if (writer != null) {
+				try {
 					writer.close();
-				}
-				catch (IOException e)
-				{
-					Log.e(getClass().getSimpleName(), "Closing file stream failed with: "
-							+ e.toString());
+				} catch (IOException e) {
+					Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
 				}
 			}
 		}
@@ -185,24 +151,19 @@ public class CsvExportImportService
 	 *            Describes how to handle duplicate lists
 	 * @return ImportResult enum value describing the outcome of import
 	 */
-	public ImportResult importDataFromCsvFile(Uri dataUri,
-			ImportDuplicateHandling handlingDuplicates)
-	{
+	public ImportResult importDataFromCsvFile(Uri dataUri, ImportDuplicateHandling handlingDuplicates) {
 		CSVReader csvreader = null;
 		InputStreamReader reader = null;
 
-		try
-		{		
+		try {
 			InputStream stream = contentResolver.openInputStream(dataUri);
 			reader = new InputStreamReader(stream);
-			
 			csvreader = new CSVReader(reader);
-			
+
 			List<String[]> lines = csvreader.readAll();
 
 			// if the file was empty, return ImportFailedNothingToImport
-			if (lines.isEmpty())
-			{
+			if (lines.isEmpty()) {
 				Log.d(getClass().getSimpleName(), "importDataFromCsvFile: the file is empty");
 				return ImportResult.ImportFailedNothingToImport;
 			}
@@ -210,39 +171,29 @@ public class CsvExportImportService
 			// HERE Is where the magic happens!
 			// 1. Validate if all items in the list have at least 3 fields.
 			// Return ImportFailedInvalidFileStructure if they don't
-			for (String[] fields : lines)
-			{
-				Log.d(getClass().getSimpleName(),
-						"importDataFromCsvFile: validating lines from file");
+			for (String[] fields : lines) {
+				Log.d(getClass().getSimpleName(), "importDataFromCsvFile: validating lines from file");
 
 				if (fields == null)
 					continue;
 
-				if (fields.length < 3)
-				{
-					Log.d(getClass().getSimpleName(),
-							"importDataFromCsvFile: file not formatted correctly");
+				if (fields.length < 3) {
+					Log.d(getClass().getSimpleName(), "importDataFromCsvFile: file not formatted correctly");
 					return ImportResult.ImportFailedInvalidFileStructure;
 				}
 
-				for (int i = 0; i < 3; i++)
-				{
-					if (fields[i] == null || fields[i].trim().equalsIgnoreCase(""))
-					{
-						Log.d(getClass().getSimpleName(),
-								"importDataFromCsvFile: file not formatted correctly");
+				for (int i = 0; i < 3; i++) {
+					if (fields[i] == null || fields[i].trim().equalsIgnoreCase("")) {
+						Log.d(getClass().getSimpleName(), "importDataFromCsvFile: file not formatted correctly");
 						return ImportResult.ImportFailedInvalidFileStructure;
 					}
 				}
 
 				// validate that if the fourth field exists, it is parsable as
 				// boolean
-				if (fields.length >= 4)
-				{
-					if (fields[3] == null || fields[3].trim().equalsIgnoreCase(""))
-					{
-						Log.d(getClass().getSimpleName(),
-								"importDataFromCsvFile: file not formatted correctly");
+				if (fields.length >= 4) {
+					if (fields[3] == null || fields[3].trim().equalsIgnoreCase("")) {
+						Log.d(getClass().getSimpleName(), "importDataFromCsvFile: file not formatted correctly");
 						return ImportResult.ImportFailedInvalidFileStructure;
 					}
 				}
@@ -250,39 +201,28 @@ public class CsvExportImportService
 
 			// 2. Create Activity, Category and Entry beans. Structure them
 			// Insert beans and complete import.
-			ActivitiesDataSource dataSource = entryProcessor.processDataImport(lines,
-					handlingDuplicates);
-			
+			ActivitiesDataSource dataSource = entryProcessor.processDataImport(lines, handlingDuplicates);
+
 			dataAccessService.updateExistingItems(dataSource);
 			dataAccessService.insertNewItems(dataSource.getNewActivities());
-		}
-		catch (Exception e)
-		{
-			Log
-					.e(getClass().getSimpleName(), "Reading data from file failed with: "
-							+ e.toString());
+			
+			
+		} catch (Exception e) {
+			Log.e(getClass().getSimpleName(), "Reading data from file failed with: " + e.toString());
 
 			return ImportResult.ImportFailedOtherError;
-		}
-		finally
-		{
-			try
-			{
+		} finally {
+			try {
 				reader.close();
+				csvreader.close();
+			} catch (IOException e) {
+				Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
 			}
-			catch (IOException e)
-			{
-				Log.e(getClass().getSimpleName(), "Closing file stream failed with: "
-						+ e.toString());
-			}
-			try
-			{
+			try {
 				reader.close();
-			}
-			catch (IOException e)
-			{
-				Log.e(getClass().getSimpleName(), "Closing file stream failed with: "
-						+ e.toString());
+				csvreader.close();
+			} catch (IOException e) {
+				Log.e(getClass().getSimpleName(), "Closing file stream failed with: " + e.toString());
 			}
 		}
 

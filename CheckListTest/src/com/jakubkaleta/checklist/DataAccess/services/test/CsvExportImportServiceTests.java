@@ -22,11 +22,11 @@ import com.jakubkaleta.checklist.DataAccess.services.ImportResult;
 import com.jakubkaleta.checklist.DataAccess.test.DataProviderTestHelper;
 
 /**
- * @author Jakub Kaleta Contains tests for methods in the DataAccessService class.
+ * @author Jakub Kaleta Contains tests for methods in the DataAccessService
+ *         class.
  */
 @SuppressWarnings("deprecation")
-public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataProvider>
-{
+public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataProvider> {
 	private ChecklistDataProvider dataProvider;
 	private DataProviderTestHelper helper;
 	private CsvExportImportService importService;
@@ -36,14 +36,12 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 	/**
 	 * Main constructor
 	 */
-	public CsvExportImportServiceTests()
-	{
+	public CsvExportImportServiceTests() {
 		super(ChecklistDataProvider.class, authority);
 	}
 
 	@Override
-	protected void setUp() throws Exception
-	{
+	protected void setUp() throws Exception {
 		super.setUp();
 		dataProvider = this.getProvider();
 		helper = new DataProviderTestHelper(dataProvider);
@@ -56,28 +54,26 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 
 		AssetManager assets = this.getInstrumentation().getContext().getAssets();
 		String[] fileNames = assets.list("testImportFiles");
-		for (String name : fileNames)
-		{
-			// copy all test files from assets to a physical location on the device
-			// to better recreate a real-life scenario where files have locations
+		for (String name : fileNames) {
+			// copy all test files from assets to a physical location on the
+			// device
+			// to better recreate a real-life scenario where files have
+			// locations
 			// and paths
 			copyFileFromAssetsToExternalStorage(assets, new File("testImportFiles", name).getPath());
 		}
 
-		
 	}
 
 	@Override
-	protected void tearDown() throws Exception
-	{
+	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 
 	/**
 	 * For testing the getAllItemsFromAllListsAsCsvData method
 	 */
-	public void testGetAllItemsFromAllListsAsCsvData()
-	{
+	public void testGetAllItemsFromAllListsAsCsvData() {
 		// arrange
 		// let's add a new list, category, and a few items to the new list
 		Uri listUri = helper.insertNewList("testlist");
@@ -98,8 +94,7 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 		// Act & Assert
 		Boolean methodExecutedSuccessfully = importService.getAllItemsFromAllListsAsCsvData(fileName);
 
-		File databaseExportFile = new File(Environment.getExternalStorageDirectory()
-				+ "/ReverseChecklist/DatabaseExport", fileName);
+		File databaseExportFile = new File(Environment.getExternalStorageDirectory() + "/ReverseChecklist/DatabaseExport", fileName);
 		Boolean fileWritten = databaseExportFile.exists();
 
 		// clean up before the assertions
@@ -115,13 +110,12 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 	/**
 	 * For testing the case when selected file is not a cvs file.
 	 */
-	public void testImportData_InvalidFileExtension()
-	{
+	public void testImportData_InvalidFileExtension() {
 		// Arrange
 		String fileName = "file.asd";
 
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(fileName,ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(fileName), ImportDuplicateHandling.RenameImportedList);
 
 		// Assert
 		assertEquals(ImportResult.ImportFailedInvalidFileName, result);
@@ -130,13 +124,12 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 	/**
 	 * For testing the case when selected file does not exist.
 	 */
-	public void testImportData_FileDoesNotExist()
-	{
+	public void testImportData_FileDoesNotExist() {
 		// Arrange
 		String fileName = "file.csv";
 
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(fileName,ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(fileName), ImportDuplicateHandling.RenameImportedList);
 
 		// Assert
 		assertEquals(ImportResult.ImportFailedInvalidFileName, result);
@@ -145,80 +138,77 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 	/**
 	 * For testing the case when selected file does not exist.
 	 */
-	public void testImportData_FileExistsAndIsEmpty()
-	{
+	public void testImportData_FileExistsAndIsEmpty() {
 		// Arrange
 		File sourceFileName = new File("testImportFiles", "import_csv_test_empty_file.csv");
 
 		String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File outFile = new File(rootPath, sourceFileName.getPath());
-		
+
 		assertTrue(outFile.exists());
-		
+
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(outFile.getAbsolutePath(),ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(outFile.getAbsolutePath()), ImportDuplicateHandling.RenameImportedList);
 
 		// Assert
 		assertEquals(ImportResult.ImportFailedInvalidFileStructure, result);
 	}
-	
+
 	/**
 	 * For testing the case when selected file is not properly formatted.
 	 */
-	public void testImportData_FileExistsAndIsFormattedIncorrectly()
-	{
+	public void testImportData_FileExistsAndIsFormattedIncorrectly() {
 		// Arrange
 		File sourceFileName = new File("testImportFiles", "import_csv_test_invalid_file_structure.csv");
 
 		String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File outFile = new File(rootPath, sourceFileName.getPath());
-		
+
 		assertTrue(outFile.exists());
-		
+
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(outFile.getAbsolutePath(), ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(outFile.getAbsolutePath()), ImportDuplicateHandling.RenameImportedList);
 
 		// Assert
 		assertEquals(ImportResult.ImportFailedInvalidFileStructure, result);
 	}
-	
+
 	/**
 	 * For testing the case when selected file is properly imported.
 	 */
-	public void testImportData_FileIsSuccesfullyImported()
-	{
+	public void testImportData_FileIsSuccesfullyImported() {
 		// Arrange
 		File sourceFileName = new File("testImportFiles", "import_csv_test_valid_file.csv");
 
 		String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File outFile = new File(rootPath, sourceFileName.getPath());
-		
+
 		assertTrue(outFile.exists());
-		
+
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(outFile.getAbsolutePath(),ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(outFile.getAbsolutePath()), ImportDuplicateHandling.RenameImportedList);
 
 		// Assert
 		assertEquals(ImportResult.ImportSucceeded, result);
 	}
-	
+
 	/**
-	 * For testing the case when selected file is properly imported with selection information
+	 * For testing the case when selected file is properly imported with
+	 * selection information
 	 */
-	public void testImportData_FileIsSuccesfullyImported_SelectionPersisted()
-	{
+	public void testImportData_FileIsSuccesfullyImported_SelectionPersisted() {
 		// Arrange
 		File sourceFileName = new File("testImportFiles", "import_csv_test_valid_file_with_selection.csv");
 
 		String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 		File outFile = new File(rootPath, sourceFileName.getPath());
-		
+
 		assertTrue(outFile.exists());
-		
+
 		// Act
-		ImportResult result = importService.importDataFromCsvFile(outFile.getAbsolutePath(),ImportDuplicateHandling.RenameImportedList);
+		ImportResult result = importService.importDataFromCsvFile(Uri.parse(outFile.getAbsolutePath()), ImportDuplicateHandling.RenameImportedList);
 		// get all items that were imported
-		ActivitiesDataSource allLists = dataAccessService.getActivitiesWithChildren(new Long[]{}, false);
+		ActivitiesDataSource allLists = dataAccessService.getActivitiesWithChildren(new Long[] {}, false);
 		ActivityBean testList = allLists.getActivity("test list");
 		ActivityBean otherList = allLists.getActivity("other list");
 
@@ -229,14 +219,14 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 		assertFalse(testList.getCategory("test category2").getEntries().get(0).getIsSelected());
 		assertTrue(otherList.getCategories().get(0).getEntries().get(0).getIsSelected());
 		assertTrue(otherList.getCategories().get(0).getEntries().get(1).getIsSelected());
-		
-		// now part II of the test. 
+
+		// now part II of the test.
 		// verify that the selection is properly updated in existing lists
 		// when merge lists is selected
 		allLists.updateSelectionOfAllItems(false);
-		result = importService.importDataFromCsvFile(outFile.getAbsolutePath(),ImportDuplicateHandling.MergeExistingAndImportedLists);
+		result = importService.importDataFromCsvFile(Uri.parse(outFile.getAbsolutePath()), ImportDuplicateHandling.MergeExistingAndImportedLists);
 		// get all items that were imported
-		allLists = dataAccessService.getActivitiesWithChildren(new Long[]{}, false);
+		allLists = dataAccessService.getActivitiesWithChildren(new Long[] {}, false);
 		testList = allLists.getActivity("test list");
 		otherList = allLists.getActivity("other list");
 
@@ -247,33 +237,27 @@ public class CsvExportImportServiceTests extends ProviderTestCase<ChecklistDataP
 		assertFalse(testList.getCategory("test category2").getEntries().get(0).getIsSelected());
 		assertFalse(otherList.getCategories().get(0).getEntries().get(0).getIsSelected());
 		assertTrue(otherList.getCategories().get(0).getEntries().get(1).getIsSelected());
-		
-	} 
 
-	private String copyFileFromAssetsToExternalStorage(AssetManager assets, String sourceFileName)
-			throws IOException
-	{
+	}
+
+	private String copyFileFromAssetsToExternalStorage(AssetManager assets, String sourceFileName) throws IOException {
 		InputStream in = assets.open(sourceFileName);
 
 		String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 		File outFile = new File(rootPath, sourceFileName);
-		if (outFile.exists())
-		{
+		if (outFile.exists()) {
 			outFile.delete();
-		}
-		else
-		{
+		} else {
 			outFile.mkdirs();
 		}
-		
+
 		outFile.createNewFile();
 
 		OutputStream out = new FileOutputStream(outFile);
 		byte[] buf = new byte[1024];
 		int len;
-		while ((len = in.read(buf)) > 0)
-		{
+		while ((len = in.read(buf)) > 0) {
 			out.write(buf, 0, len);
 		}
 		in.close();
