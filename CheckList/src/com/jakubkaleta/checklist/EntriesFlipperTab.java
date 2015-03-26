@@ -39,7 +39,7 @@ import com.jakubkaleta.checklist.DataAccess.tables.EntryColumns;
  * 
  */
 public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView implements LoaderManager.LoaderCallbacks<Cursor> {
-	
+
 	private Activity parent;
 	private CategoryBean category;
 	private final Boolean inToDoMode;
@@ -49,7 +49,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 	private final ConfigurationBean currentConfiguration;
 	private final DataAccessService service;
 	private final DisplayedCategoryGetter categoryGetter;
-	//private final TabContentObserver contentObserver;
+	private final TabContentObserver contentObserver;
 	private SimpleCursorAdapter itemListAdapter;
 
 	private static final int LOADER_ID = 10;
@@ -86,7 +86,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 		this.categoryGetter = displayedCategoryGetter;
 		service = new DataAccessService(context.getContentResolver());
 		currentConfiguration = service.getCurrentConfiguration();
-		//this.contentObserver = new TabContentObserver(new Handler());
+		this.contentObserver = new TabContentObserver(new Handler());
 		this.setDrawSelectorOnTop(true);
 
 		// setGrabberIcon(R.id.icon);
@@ -171,11 +171,11 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 			});
 
 			setAdapter(itemListAdapter);
-			
+
 			mCallbacks = this;
 			LoaderManager lm = parent.getLoaderManager();
-			lm.initLoader(LOADER_ID + (int)category.getId(), null, mCallbacks);
-			
+			lm.initLoader(LOADER_ID + (int) category.getId(), null, mCallbacks);
+
 		} catch (Exception e) {
 			Log.e(TAG, "Exception when querying for data " + e.getMessage());
 		}
@@ -192,7 +192,7 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 		});
 
 		final GestureDetector gestureDetector = new GestureDetector(context, gestureListener);
-		
+
 		OnTouchListener touchListener = new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				if (gestureDetector.onTouchEvent(event)) {
@@ -220,7 +220,11 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		itemListAdapter.swapCursor(cursor);
-		//cursor.registerContentObserver(contentObserver);
+		try {
+			cursor.registerContentObserver(contentObserver);
+		} catch (Exception e) {
+			// swallow
+		}
 	}
 
 	@Override
@@ -275,25 +279,25 @@ public class EntriesFlipperTab extends com.commonsware.cwac.tlv.TouchListView im
 		}
 	}
 
-//	private class TabContentObserver extends ContentObserver {
-//		public TabContentObserver(Handler handler) {
-//			super(handler);
-//		}
-//
-//		@Override
-//		public void onChange(boolean selfChange) {
-//			if (category.getId() == categoryGetter.getDisplayedCategoryId()) {
-//				Log.v(TAG,
-//						"onChange called on the main cursor. SelfChange: " + (selfChange ? "True" : "False") + " Category: "
-//								+ category.getId());
-//			}
-//
-//		}
-//
-//		@Override
-//		public boolean deliverSelfNotifications() {
-//			return false;
-//		}
-//	}
+	private class TabContentObserver extends ContentObserver {
+		public TabContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			if (category.getId() == categoryGetter.getDisplayedCategoryId()) {
+				Log.v(TAG,
+						"onChange called on the main cursor. SelfChange: " + (selfChange ? "True" : "False") + " Category: "
+								+ category.getId());
+			}
+
+		}
+
+		@Override
+		public boolean deliverSelfNotifications() {
+			return false;
+		}
+	}
 
 }

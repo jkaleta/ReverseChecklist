@@ -95,8 +95,7 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 			addMultipleItemsHint.setVisibility(View.GONE);
 			addEditEntry.setText(resources.getString(R.string.save_changes));
 			setTitle(resources.getString(R.string.edit_item));
-
-			entry_id = getIntent().getLongExtra("EntryId", 0);
+			
 			lm.initLoader(ENTRY_LOADER_ID, null, mCallbacks);
 			// see the rest in loader callbacks
 		} else {
@@ -133,9 +132,9 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 					+ " = " + activity_id, null, CategoryColumns.TABLE_NAME + "." + CategoryColumns.SORT_POSITION);
 
 		case ENTRY_LOADER_ID:
+			entry_id = getIntent().getLongExtra("EntryId", 0);
 			return new CursorLoader(AddEditEntry.this, EntryColumns.CONTENT_URI, ENTRY_PROJECTION, EntryColumns.TABLE_NAME + "."
 					+ EntryColumns._ID + " = " + entry_id, null, EntryColumns.DEFAULT_SORT_ORDER);
-
 		}
 		return null;
 	}
@@ -146,13 +145,14 @@ public class AddEditEntry extends Activity implements LoaderManager.LoaderCallba
 		switch (loader.getId()) {
 		case CATEGORIES_LOADER_ID:
 			bindCategoryDropdown(cursor);
-
+            break;
 		case ENTRY_LOADER_ID:
 			if (mode.equalsIgnoreCase("EDIT")) {
 				cursor.moveToFirst();
 				entryName.setText(cursor.getString(cursor.getColumnIndex(EntryColumns.ENTRY_NAME)));
 				category_id = cursor.getLong(cursor.getColumnIndex(EntryColumns.CATEGORY_ID));	
 			}
+			break;
 		}
 	}
 

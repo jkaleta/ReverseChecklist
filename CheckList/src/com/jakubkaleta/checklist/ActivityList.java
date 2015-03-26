@@ -180,6 +180,7 @@ public class ActivityList extends ListActivity implements LoaderManager.LoaderCa
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		
 		cursor.registerContentObserver(new ContentObserver(new Handler()) {
 			@Override
 			public void onChange(boolean selfChange) {
